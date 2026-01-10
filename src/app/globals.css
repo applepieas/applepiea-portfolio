@@ -1,24 +1,65 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #171717;
-  --color-foreground: #FAFAF9;
-  --color-secondary: #292524;
+  --color-background: #FAFAF9;
+  --color-foreground: #171717;
+  --color-secondary: #E5E5E5;
   --color-muted: #9F9FA9;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.intro {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.video-container-desktop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.25);
+  width: 1200px;
+  /* Fixed width for the container */
+  z-index: 10;
+  /* Make sure it's above background */
+  will-change: transform;
+}
+
+.video-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 1.5rem;
+  background-color: #000;
+  /* Changed to black so you can see the container */
+  overflow: hidden;
+}
+
+.video-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+  pointer-events: none;
 }
