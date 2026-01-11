@@ -40,6 +40,8 @@ const Hero = () => {
     if (!videoRef.current || !containerRef.current) return;
 
     let scrollTween: gsap.core.Tween | null = null;
+    let scrollProgress = 0;
+    let currentXOffset = 0; // Track the current mouse-induced X offset
 
     const createScrollAnimation = (startYPercent: number) => {
       if (scrollTween) scrollTween.kill();
@@ -55,6 +57,14 @@ const Hero = () => {
           scrub: true,
           invalidateOnRefresh: true,
           markers: false,
+          onUpdate: (self) => {
+            scrollProgress = self.progress;
+
+            // Gradually move x towards center based on scroll progress
+            // At progress 0: full offset, at progress 1: x = 0
+            const targetX = currentXOffset * (1 - scrollProgress);
+            gsap.set(videoRef.current, { x: targetX });
+          }
         }
       });
     };
@@ -90,7 +100,15 @@ const Hero = () => {
       const currentScale = gsap.getProperty(videoRef.current, "scale") as number;
       const { movMultiplier } = getInitialValues(window.innerWidth);
       const scaleMovMultiplier = (1 - currentScale) * movMultiplier;
-      const xOffset = currentScale < 0.95 ? targetMouseX * scaleMovMultiplier : 0;
+
+      // Calculate base offset from mouse position and scale
+      const baseOffset = currentScale < 0.95 ? targetMouseX * scaleMovMultiplier : 0;
+
+      // Store the base offset so scroll can gradually reduce it
+      currentXOffset = baseOffset;
+
+      // Apply with scroll progress reduction
+      const xOffset = baseOffset * (1 - scrollProgress);
 
       gsap.to(videoRef.current, {
         x: xOffset,
