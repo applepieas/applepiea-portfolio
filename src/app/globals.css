@@ -17,31 +17,37 @@ body {
 }
 
 .intro {
-  position: relative;
-  height: 100%;
+  position: sticky;
+  top: 25%;
+  height: 100vh;
   width: 100%;
+  z-index: 50;
 }
 
 .video-container-desktop {
   position: absolute;
-  top: 50%;
+  top: 25%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.25);
-  width: 1200px;
-  /* Fixed width for the container */
-  z-index: 10;
-  /* Make sure it's above background */
+  width: 1800px;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
   will-change: transform;
+  visibility: hidden;
+  z-index: 50;
+
+  /* HIDDEN BY DEFAULT - GSAP will reveal with autoAlpha */
 }
 
 .video-preview {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 1.5rem;
+  border-radius: 1. 5rem;
   background-color: #000;
-  /* Changed to black so you can see the container */
   overflow: hidden;
+  border-radius: 1.5rem;
+  z-index: 50;
 }
 
 .video-wrapper {
@@ -52,6 +58,7 @@ body {
   height: 100%;
   border-radius: 1.5rem;
   overflow: hidden;
+  z-index: 50;
 }
 
 iframe {
@@ -62,4 +69,5 @@ iframe {
   height: 100%;
   border-radius: 1.5rem;
   pointer-events: none;
+  z-index: 50;
 }

@@ -14,6 +14,7 @@ export default function Home() {
       <Header />
       <Hero />
       <Outro />
+      <Outro />
     </main>
   );
 }

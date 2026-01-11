@@ -1,172 +1,135 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
-import { useEffect } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const breakpoints = [
-  { maxWidth: 900, translateY: -135, movMultiplier: 450 },
-  { maxWidth: 1100, translateY: -130, movMultiplier: 500 },
-  { maxWidth: 1200, translateY: -125, movMultiplier: 550 },
-  { maxWidth: 1400, translateY: -120, movMultiplier: 600 },
+  { maxWidth: 900, translateY: -35, movMultiplier: 450 },
+  { maxWidth: 1100, translateY: -30, movMultiplier: 500 },
+  { maxWidth: 1200, translateY: -25, movMultiplier: 550 },
+  { maxWidth: 1400, translateY: -20, movMultiplier: 600 },
 ];
 
-const getInitialValues = () => {
-  const width = window.innerWidth;
-
+const getInitialValues = (width: number) => {
   for (const bp of breakpoints) {
     if (width <= bp.maxWidth) {
       return { translateY: bp.translateY, movMultiplier: bp.movMultiplier };
     }
   }
-
-  return { translateY: -110, movMultiplier: 650 };
-}
-
-
+  return { translateY: -10, movMultiplier: 650 }; // Small offset from center
+};
 
 const Hero = () => {
+  const containerRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    if (window.innerWidth < 900) return;
-
-    const initialValues = getInitialValues();
-
-    const animationState = {
-      scrollProgress: 0,
-      initialTranslateY: initialValues.translateY,
-      currentTranslateY: initialValues.translateY,
-      movMultiplier: initialValues.movMultiplier,
-      scale: 0.25,
-      targetMouseX: 0,
-      currentMouseX: 0,
+  useGSAP(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 900;
+      setIsMobile(mobile);
+      return mobile;
     };
 
-    const videoContainer = document.querySelector('.video-container-desktop') as HTMLElement;
+    if (checkMobile()) return;
 
+    if (!videoRef.current || !containerRef.current) return;
 
-    window.addEventListener('resize', () => {
-      const newValues = getInitialValues();
-      animationState.initialTranslateY = newValues.translateY;
-      animationState.movMultiplier = newValues.movMultiplier;
+    let scrollTween: gsap.core.Tween | null = null;
 
-      if (animationState.scrollProgress === 0) {
-        animationState.currentTranslateY = newValues.translateY;
-      }
-    });
+    const createScrollAnimation = (startYPercent: number) => {
+      if (scrollTween) scrollTween.kill();
 
-    const lenis = new Lenis();
-
-    const update = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0);
-
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: '.intro',
-        start: 'top bottom',
-        end: ' top 10%',
-        scrub: true,
-        onUpdate: (self) => {
-          animationState.scrollProgress = self.progress;
-
-          animationState.currentTranslateY = gsap.utils.interpolate(
-            animationState.initialTranslateY,
-            0,
-            animationState.scrollProgress
-          );
-
-          animationState.scale = gsap.utils.interpolate(
-            0.25,
-            1,
-            animationState.scrollProgress
-          );
+      scrollTween = gsap.to(videoRef.current, {
+        yPercent: -12.5,
+        scale: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom 90%',
+          scrub: true,
+          invalidateOnRefresh: true,
+          markers: false,
         }
-      }
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      animationState.targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    });
-
-    const animate = () => {
-      if (window.innerWidth < 900) return;
-
-      const {
-        scale,
-        targetMouseX,
-        currentMouseX,
-        movMultiplier,
-        currentTranslateY
-      } = animationState;
-
-      const scaleMovMultiplier = (1 - scale) * movMultiplier;
-
-      const maxHorizontalMovement =
-        scale < 0.95 ? targetMouseX * scaleMovMultiplier : 0;
-
-      animationState.currentMouseX = gsap.utils.interpolate(
-        currentMouseX,
-        maxHorizontalMovement,
-        0.05
-      );
-
-      videoContainer.style.transform = `translateX(${animationState.currentMouseX}px) translateY(${currentTranslateY}px) scale(${scale})`;
-
-      requestAnimationFrame(animate);
-
+      });
     };
 
-    animate();
+    const updateInitialState = () => {
+      const { translateY } = getInitialValues(window.innerWidth);
+      // Start slightly above center:  -50 is center, so -60 would be 10% above center
+      const startYPercent = -50 + translateY;
+
+      console.log('Hero:  Setting initial state', { translateY, startYPercent });
+
+      gsap.killTweensOf(videoRef.current);
+
+      gsap.set(videoRef.current, {
+        xPercent: -50,
+        yPercent: startYPercent,
+        scale: 0.35,
+        x: 0,
+        autoAlpha: 1,
+        transformOrigin: "center center",
+        overwrite: 'auto'
+      });
+
+      createScrollAnimation(startYPercent);
+    };
+
+    gsap.delayedCall(0.01, updateInitialState);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!videoRef.current) return;
+
+      const targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      const currentScale = gsap.getProperty(videoRef.current, "scale") as number;
+      const { movMultiplier } = getInitialValues(window.innerWidth);
+      const scaleMovMultiplier = (1 - currentScale) * movMultiplier;
+      const xOffset = currentScale < 0.95 ? targetMouseX * scaleMovMultiplier : 0;
+
+      gsap.to(videoRef.current, {
+        x: xOffset,
+        duration: 0.5,
+        overwrite: 'auto'
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', updateInitialState);
 
     return () => {
-      gsap.ticker.remove(update);
-      lenis.destroy();
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', updateInitialState);
+      if (scrollTween) scrollTween.kill();
     };
-  }, []);
 
+  }, { scope: containerRef, dependencies: [] });
 
   return (
-    <section className='block pb-10 h-[100vh]'>
+    <section ref={containerRef} className='block pb-10 h-[200vh]'>
       <div className="intro">
-        <div className="video-container-desktop">
-          <div className="video-preview">
-            <div className="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
-                frameBorder="0"
-                allow='autoplay; fullscreen; picture-in-picture'
-                className='pointer-events-none'
-                loading='lazy'
-                title='fish video'
-              ></iframe>
+        {!isMobile && (
+          <div ref={videoRef} className="video-container-desktop">
+            <div className="video-preview">
+              <div className="video-wrapper">
+                <iframe
+                  src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
+                  frameBorder="0"
+                  allow='autoplay; fullscreen; picture-in-picture'
+                  className='pointer-events-none'
+                  loading='lazy'
+                  title='fish video'
+                ></iframe>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/*
-        <div className="video-container-mobile">
-          <div className="video-preview">
-            <div className="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
-                frameBorder="0"
-                allow='autoplay; fullscreen; picture-in-picture'
-                className='pointer-events-none'
-                loading='lazy'
-                title='fish video'
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      */}
+        )}
       </div>
-
 
       <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8'>
         <div className='flex justify-between font-semibold text-[20px]'>
@@ -188,8 +151,10 @@ const Hero = () => {
         <p>FOR MORE</p>
       </div>
 
-
-    </section >
+      <div className='flex justify-center align-center font-semibold text-[20px] h-[100vh]'>
+        <p>OUTRO</p>
+      </div>
+    </section>
   )
 }
 
