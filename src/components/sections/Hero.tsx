@@ -47,7 +47,7 @@ const Hero = () => {
       if (scrollTween) scrollTween.kill();
 
       scrollTween = gsap.to(videoRef.current, {
-        yPercent: -12.5,
+        yPercent: -9,
         scale: 1,
         ease: 'none',
         scrollTrigger: {
@@ -170,7 +170,7 @@ const Hero = () => {
       </div>
 
       <div className='flex justify-center align-center font-semibold text-[20px] h-[100vh]'>
-        <p>OUTRO</p>
+        <p className='text-background'>OUTRO</p>
       </div>
     </section>
   )

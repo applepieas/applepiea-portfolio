@@ -5,6 +5,7 @@
   --color-foreground: #171717;
   --color-secondary: #E5E5E5;
   --color-muted: #9F9FA9;
+  --color-foreground-secondary: #292524;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -29,7 +30,7 @@ body {
   top: 25%;
   left: 50%;
   width: 1800px;
-  max-width: calc(100vw - 90px);
+  max-width: calc(100vw - 60px);
   display: flex;
   flex-direction: column;
   gap: 2em;
@@ -71,4 +72,72 @@ iframe {
   border-radius: 1.5rem;
   pointer-events: none;
   z-index: 50;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* About Section Styles */
+
+.copy-block {
+  flex: 1;
+}
+
+.copy-block p {
+  font-size: 1.75rem;
+  line-height: 2rem;
+  font-weight: 550;
+  max-width: 400px;
+  letter-spacing: -0.025rem;
+}
+
+.copy-block p .word {
+  will-change: transform;
+}
+
+.scroll-indicator {
+  position: absolute;
+  width: 15rem;
+  height: 0.125rem;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-muted);
+}
+
+.scroll-indicator::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-foreground);
+  transform-origin: left;
+  transform: scaleX(var(--progress, 0));
+  will-change: transform;
+}
+
+.marquee {
+  position: absolute;
+  bottom: 2rem;
+  width: 100%;
+  height: 7.5rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 0.75rem;
+  will-change: transform;
+}
+
+.marquee-item {
+  width: 10rem;
+  height: 6rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
 }
