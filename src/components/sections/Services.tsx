@@ -13,17 +13,20 @@ const services = [
   {
     number: "01",
     title: "Design",
-    description: "I design high-fidelity interfaces and design systems. I focus on aesthetics that reflect the brand's identity while ensuring a seamless user experience."
+    description: "I design high-fidelity interfaces and design systems. I focus on aesthetics that reflect the brand's identity while ensuring a seamless user experience.",
+    tags: ["UI/UX DESIGN", "DESIGN SYSTEMS", "PROTOTYPING", "FIGMA"]
   },
   {
     number: "02",
     title: "Development",
-    description: "Evolving with every brief and built for impact, my process spans design, development, and brand strategy."
+    description: "Evolving with every brief and built for impact, my process spans design, development, and brand strategy.",
+    tags: ["REACT", "NEXT.JS", "GSAP", "TYPESCRIPT", "TAILWIND CSS", "FRAMER MOTION"]
   },
   {
     number: "03",
     title: "Strategy",
-    description: "Evolving with every brief and built for impact, my process spans design, development, and brand strategy."
+    description: "Evolving with every brief and built for impact, my process spans design, development, and brand strategy.",
+    tags: ["RESEARCH & INSIGHTS", "BRAND STRATEGY", "COMPETITIVE STUDY", "VOICE & TONE"]
   }
 ];
 
@@ -125,6 +128,18 @@ export default function Services() {
                       <p className="text-[20px] text-[#e5e5e5] leading-relaxed max-w-xs">
                         {service.description}
                       </p>
+                    </Copy>
+                    <Copy animateOnScroll={true} delay={0.15} className="mt-6">
+                      <div className="flex flex-wrap gap-2">
+                        {service.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-block mr-2 px-4 py-1.75 bg-[#525252]/30 text-sm font-medium rounded-lg uppercase text-[#e5e5e5] tracking-wide box-border"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </Copy>
                   </div>
 

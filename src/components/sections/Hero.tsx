@@ -25,7 +25,11 @@ const getInitialValues = (width: number) => {
   return { translateY: -10, movMultiplier: 650 }; // Small offset from center
 };
 
-const Hero = () => {
+interface HeroProps {
+  isLoaded?: boolean;
+}
+
+const Hero = ({ isLoaded = false }: HeroProps) => {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const videoMaskRef = useRef<HTMLDivElement>(null);
@@ -133,22 +137,31 @@ const Hero = () => {
 
   }, { scope: containerRef, dependencies: [] });
 
-  // Video mask reveal animation (from top)
+  // Set initial hidden state for video mask (before preloader completes)
   useGSAP(() => {
     if (isMobile || !videoMaskRef.current) return;
 
-    gsap.fromTo(
-      videoMaskRef.current,
-      { yPercent: -100 },
-      { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.2 }
-    );
+    // Set initial state - hidden above the screen
+    gsap.set(videoMaskRef.current, { yPercent: -100 });
   }, { dependencies: [isMobile] });
+
+  // Video mask reveal animation (from top) - wait for preloader
+  useGSAP(() => {
+    if (isMobile || !videoMaskRef.current || !isLoaded) return;
+
+    gsap.to(
+      videoMaskRef.current,
+      { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.4 }
+    );
+  }, { dependencies: [isMobile, isLoaded] });
+
+  const textDelay = 0.2;
 
   return (
     <section ref={containerRef} className='block pb-10 h-[200vh]'>
       <div className="intro">
         {!isMobile && (
-          <div ref={videoRef} className="video-mask">
+          <div ref={videoRef} className="video-mask" style={{ visibility: isLoaded ? 'visible' : 'hidden' }}>
             <div ref={videoMaskRef} className="video-container-desktop">
               <div className="video-preview">
                 <div className="video-wrapper">
@@ -169,27 +182,27 @@ const Hero = () => {
 
       <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8'>
         <div className='flex justify-between font-semibold text-[20px]'>
-          <Copy animateOnScroll={false} delay={0.5}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <p className="ml-4">A</p>
           </Copy>
-          <Copy animateOnScroll={false} delay={0.6}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <p>PRETTY</p>
           </Copy>
-          <Copy animateOnScroll={false} delay={0.7}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <p>DECENT</p>
           </Copy>
         </div>
 
-        <Copy animateOnScroll={false} delay={0.3} className='w-full'>
+        <Copy animateOnScroll={false} delay={textDelay} className='w-full' isReady={isLoaded}>
           <h1 className='font-bold text-[208px] tracking-tighter leading-[0.85] whitespace-nowrap'>DESIGN ENGINEER</h1>
         </Copy>
       </div>
 
-      <Copy animateOnScroll={false} delay={0.7} className='absolute left-10 bottom-10 font-semibold text-[20px]'>
+      <Copy animateOnScroll={false} delay={textDelay} className='absolute left-10 bottom-10 font-semibold text-[20px]' isReady={isLoaded}>
         <p>SCROLL DOWN</p>
       </Copy>
 
-      <Copy animateOnScroll={false} delay={0.8} className='absolute right-10 bottom-10 font-semibold text-[20px]'>
+      <Copy animateOnScroll={false} delay={textDelay} className='absolute right-10 bottom-10 font-semibold text-[20px]' isReady={isLoaded}>
         <p>FOR MORE</p>
       </Copy>
 

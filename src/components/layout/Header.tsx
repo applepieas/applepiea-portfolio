@@ -5,18 +5,24 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Copy from '../ui/Copy';
 
-export default function Header() {
+interface HeaderProps {
+  isLoaded?: boolean;
+}
+
+export default function Header({ isLoaded = false }: HeaderProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useGSAP(() => {
-    if (!buttonRef.current) return;
+    if (!buttonRef.current || !isLoaded) return;
 
     gsap.fromTo(
       buttonRef.current,
       { yPercent: 100, opacity: 0 },
-      { yPercent: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.4 }
+      { yPercent: 0, opacity: 1, duration: 1.5, ease: 'power3.out', delay: 0.2 }
     );
-  });
+  }, { dependencies: [isLoaded] });
+
+  const textDelay = 0.2;
 
   return (
     <header>
@@ -25,30 +31,30 @@ export default function Header() {
 
         {/* Col 1: Location */}
         <div className="col-span-3 flex flex-col items-start gap-0.8">
-          <Copy animateOnScroll={false} delay={0.1}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-semibold text-foreground">Prague Based</span>
           </Copy>
-          <Copy animateOnScroll={false} delay={0.15}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-medium text-muted">Will work globally</span>
           </Copy>
         </div>
 
         {/* Col 2: Status */}
         <div className="col-span-3 flex flex-col items-start gap-0.8">
-          <Copy animateOnScroll={false} delay={0.2}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-semibold text-foreground">Currently</span>
           </Copy>
-          <Copy animateOnScroll={false} delay={0.25}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-medium text-muted">Learning Three.js</span>
           </Copy>
         </div>
 
         {/* Col 3: Local Time */}
         <div className="col-span-3 flex flex-col items-start gap-0.8">
-          <Copy animateOnScroll={false} delay={0.3}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-semibold text-foreground">Local time</span>
           </Copy>
-          <Copy animateOnScroll={false} delay={0.35}>
+          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-medium text-muted">22:03 GMT+</span>
           </Copy>
         </div>
@@ -59,7 +65,7 @@ export default function Header() {
         <button
           ref={buttonRef}
           className="inline-flex items-center justify-center bg-foreground text-background px-6 py-3.5 rounded-[20px] font-semibold text-[1.25rem] cursor-pointer"
-          style={{ opacity: 0 }}
+          style={{ opacity: 0, visibility: isLoaded ? 'visible' : 'hidden' }}
         >
           Get in touch
         </button>
@@ -68,3 +74,4 @@ export default function Header() {
     </header>
   );
 }
+

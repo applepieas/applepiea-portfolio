@@ -9,7 +9,7 @@ import React from 'react';
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export default function Copy({ children, animateOnScroll = true, delay = 0, className = '' }) {
+export default function Copy({ children, animateOnScroll = true, delay = 0, className = '', isReady = true }) {
   const containerRef = useRef(null);
   const elementRef = useRef([]);
   const splitRef = useRef([]);
@@ -17,7 +17,7 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
 
   useGSAP(() => {
 
-    if (!containerRef.current) return;
+    if (!containerRef.current || !isReady) return;
 
     splitRef.current = [];
     elementRef.current = [];
@@ -60,7 +60,7 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
 
     const animationProps = {
       y: '0%',
-      duration: 1.2,
+      duration: 1.5,
       ease: 'power3.out',
       stagger: 0.1,
       delay: delay,
@@ -87,11 +87,15 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
       })
     };
 
-  }, { scope: containerRef, dependencies: [animateOnScroll, delay] });
+  }, { scope: containerRef, dependencies: [animateOnScroll, delay, isReady] });
+
+  // Hide content when isReady is false (before preloader completes)
+  const hiddenStyle = !isReady ? { visibility: 'hidden' } : {};
 
   return (
-    <div ref={containerRef} className={className} data-copy-wrapper="true">
+    <div ref={containerRef} className={className} data-copy-wrapper="true" style={hiddenStyle}>
       {children}
     </div>
   )
 }
+
