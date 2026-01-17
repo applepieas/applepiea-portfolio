@@ -4,7 +4,6 @@ import About from "@/components/sections/About";
 import Stack from "@/components/sections/Stack";
 import Services from "@/components/sections/Services";
 import Footer from "@/components/layout/Footer";
-import Outro from "@/components/sections/Outro";
 
 export default function Home() {
 
@@ -15,7 +14,7 @@ export default function Home() {
       <About />
       <Services />
       <Stack />
-
+      <Footer />
     </main>
   );
 }

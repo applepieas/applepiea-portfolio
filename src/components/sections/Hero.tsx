@@ -1,11 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
+import Copy from '../ui/Copy';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const breakpoints = [
   { maxWidth: 900, translateY: -35, movMultiplier: 450 },
@@ -26,9 +28,12 @@ const getInitialValues = (width: number) => {
 const Hero = () => {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
+  const videoMaskRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  // ScrollTrigger reel animation
   useGSAP(() => {
+
     const checkMobile = () => {
       const mobile = window.innerWidth < 900;
       setIsMobile(mobile);
@@ -128,21 +133,34 @@ const Hero = () => {
 
   }, { scope: containerRef, dependencies: [] });
 
+  // Video mask reveal animation (from top)
+  useGSAP(() => {
+    if (isMobile || !videoMaskRef.current) return;
+
+    gsap.fromTo(
+      videoMaskRef.current,
+      { yPercent: -100 },
+      { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.2 }
+    );
+  }, { dependencies: [isMobile] });
+
   return (
     <section ref={containerRef} className='block pb-10 h-[200vh]'>
       <div className="intro">
         {!isMobile && (
-          <div ref={videoRef} className="video-container-desktop">
-            <div className="video-preview">
-              <div className="video-wrapper">
-                <iframe
-                  src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
-                  frameBorder="0"
-                  allow='autoplay; fullscreen; picture-in-picture'
-                  className='pointer-events-none'
-                  loading='lazy'
-                  title='fish video'
-                ></iframe>
+          <div ref={videoRef} className="video-mask">
+            <div ref={videoMaskRef} className="video-container-desktop">
+              <div className="video-preview">
+                <div className="video-wrapper">
+                  <iframe
+                    src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
+                    frameBorder="0"
+                    allow='autoplay; fullscreen; picture-in-picture'
+                    className='pointer-events-none'
+                    loading='lazy'
+                    title='fish video'
+                  ></iframe>
+                </div>
               </div>
             </div>
           </div>
@@ -151,23 +169,29 @@ const Hero = () => {
 
       <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8'>
         <div className='flex justify-between font-semibold text-[20px]'>
-          <p>&nbsp;&nbsp;&nbsp;&nbsp;A</p>
-          <p>PRETTY</p>
-          <p>DECENT</p>
+          <Copy animateOnScroll={false} delay={0.5}>
+            <p className="ml-4">A</p>
+          </Copy>
+          <Copy animateOnScroll={false} delay={0.6}>
+            <p>PRETTY</p>
+          </Copy>
+          <Copy animateOnScroll={false} delay={0.7}>
+            <p>DECENT</p>
+          </Copy>
         </div>
 
-        <div>
-          <h1 className='font-bold text-[208.5px] tracking-tighter leading-[0.85]'>DESIGN ENGINEER</h1>
-        </div>
+        <Copy animateOnScroll={false} delay={0.3} className='w-full'>
+          <h1 className='font-bold text-[208px] tracking-tighter leading-[0.85] whitespace-nowrap'>DESIGN ENGINEER</h1>
+        </Copy>
       </div>
 
-      <div className='overflow-hidden absolute left-10 bottom-10 font-semibold text-[20px]'>
+      <Copy animateOnScroll={false} delay={0.7} className='absolute left-10 bottom-10 font-semibold text-[20px]'>
         <p>SCROLL DOWN</p>
-      </div>
+      </Copy>
 
-      <div className='overflow-hidden absolute right-10 bottom-10 font-semibold text-[20px]'>
+      <Copy animateOnScroll={false} delay={0.8} className='absolute right-10 bottom-10 font-semibold text-[20px]'>
         <p>FOR MORE</p>
-      </div>
+      </Copy>
 
       <div className='flex justify-center align-center font-semibold text-[20px] h-[100vh]'>
         <p className='text-background'>OUTRO</p>

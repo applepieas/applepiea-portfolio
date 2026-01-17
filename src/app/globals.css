@@ -17,6 +17,17 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+span {
+  padding: 0;
+  margin: 0;
+}
+
+/* SplitText character styling - must be inline-block to prevent line breaks */
+.char {
+  display: inline-block;
+}
+
+
 .intro {
   position: sticky;
   top: 25%;
@@ -25,20 +36,25 @@ body {
   z-index: 50;
 }
 
-.video-container-desktop {
+.video-mask {
   position: absolute;
   top: 25%;
   left: 50%;
+  transform: translateX(-50%);
   width: 1800px;
   max-width: calc(100vw - 60px);
+  overflow: hidden;
+  z-index: 50;
+}
+
+.video-container-desktop {
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2em;
   will-change: transform;
-  visibility: hidden;
   z-index: 50;
-
-  /* HIDDEN BY DEFAULT - GSAP will reveal with autoAlpha */
 }
 
 .video-preview {
