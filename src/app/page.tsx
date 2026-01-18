@@ -9,6 +9,7 @@ import Services from "@/components/sections/Services";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import Preloader from "@/components/ui/Preloader";
+import Projects from "@/components/sections/Projects";
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -19,6 +20,7 @@ export default function Home() {
       <Header isLoaded={isLoaded} />
       <Hero isLoaded={isLoaded} />
       <About />
+      <Projects />
       <Services />
       <Stack />
       <Footer />

@@ -88,7 +88,7 @@ export default function Stack() {
 
     // Define stagger order - some chars flip at the same time
     // This creates a interesting pattern across the text
-    const staggerOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4, 9, 10, 11, 12, 13, 14, 15, 16];
+    const staggerOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4, 9, 13, 10, 15, 11, 16, 12, 14];
 
     wrappers.forEach((wrapper, i) => {
       const original = wrapper.querySelector(".flip-char") as HTMLElement;
@@ -184,7 +184,7 @@ export default function Stack() {
   }, [activeIndex]);
 
   return (
-    <section ref={sectionRef} className="py-20 w-full">
+    <section ref={sectionRef} className="py-20 w-full mb-[40vh]">
 
       {/* --- Section Header --- */}
       <div className="text-center mb-16 px-10 pb-32">

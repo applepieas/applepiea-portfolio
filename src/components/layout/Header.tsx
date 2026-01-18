@@ -1,28 +1,16 @@
 'use client';
 
-import { useRef } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import Copy from '../ui/Copy';
+import SlidingButton from '../ui/SlidingButton';
 
 interface HeaderProps {
   isLoaded?: boolean;
 }
 
 export default function Header({ isLoaded = false }: HeaderProps) {
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useGSAP(() => {
-    if (!buttonRef.current || !isLoaded) return;
 
-    gsap.fromTo(
-      buttonRef.current,
-      { yPercent: 100, opacity: 0 },
-      { yPercent: 0, opacity: 1, duration: 1.5, ease: 'power3.out', delay: 0.2 }
-    );
-  }, { dependencies: [isLoaded] });
-
-  const textDelay = 0.2;
+  const textDelay = 0.8;
 
   return (
     <header>
@@ -35,7 +23,7 @@ export default function Header({ isLoaded = false }: HeaderProps) {
             <span className="font-semibold text-foreground">Prague Based</span>
           </Copy>
           <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
-            <span className="font-medium text-muted">Will work globally</span>
+            <span className="font-medium text-muted">Global reach</span>
           </Copy>
         </div>
 
@@ -62,13 +50,11 @@ export default function Header({ isLoaded = false }: HeaderProps) {
       </div>
 
       <div className="fixed right-4 lg:right-8 top-4 lg:top-6 group cursor-pointer z-50 overflow-hidden">
-        <button
-          ref={buttonRef}
-          className="inline-flex items-center justify-center bg-foreground text-background px-6 py-3.5 rounded-[20px] font-semibold text-[1.25rem] cursor-pointer"
-          style={{ opacity: 0, visibility: isLoaded ? 'visible' : 'hidden' }}
-        >
-          Get in touch
-        </button>
+        <SlidingButton
+          defaultText="Get in touch"
+          hoverText="Say Ahoj! 👋"
+          isLoaded={isLoaded}
+        />
       </div>
 
     </header>

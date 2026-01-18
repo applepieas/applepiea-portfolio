@@ -14,6 +14,7 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
   const elementRef = useRef([]);
   const splitRef = useRef([]);
   const lines = useRef([]);
+  const masksRef = useRef([]);
 
   useGSAP(() => {
 
@@ -31,32 +32,56 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
     }
 
     elements.forEach((element) => {
-      elementRef.current.push(element);
+      const tagName = element.tagName?.toLowerCase();
 
-      const split = SplitText.create(element, {
-        type: 'lines',
-        mask: 'lines',
-        linesClass: 'line++'
-      });
+      // If it's an image or SVG, wrap it in a mask div so it can be revealed like text
+      if (['img', 'svg'].includes(tagName)) {
+        const mask = document.createElement('div');
+        mask.style.overflow = 'hidden';
+        mask.style.display = 'inline-block';
+        mask.style.verticalAlign = 'middle';
+        mask.style.lineHeight = '0'; // Prevent extra spacing
 
-      splitRef.current.push(split);
+        // Move any margin from the image to the mask container
+        const computedStyle = window.getComputedStyle(element);
+        mask.style.margin = computedStyle.margin;
+        element.style.margin = '0';
 
-      const computedStyle = window.getComputedStyle(element);
-      const textIndent = computedStyle.textIndent;
+        element.parentNode?.insertBefore(mask, element);
+        mask.appendChild(element);
 
-      if (textIndent && textIndent !== '0px') {
-        if (split.lines.length > 0) {
-          split.lines[0].style.paddingLeft = textIndent;
-        }
-        element.style.textIndent = '0';
+        lines.current.push(element);
+        masksRef.current.push({ mask, element });
+        return;
       }
 
-      lines.current.push(split.lines);
+      // Only apply SplitText to elements with actual text
+      if (element.textContent?.trim().length > 0) {
+        elementRef.current.push(element);
+
+        const split = SplitText.create(element, {
+          type: 'lines',
+          mask: 'lines',
+          linesClass: 'line++'
+        });
+
+        splitRef.current.push(split);
+
+        const computedStyle = window.getComputedStyle(element);
+        const textIndent = computedStyle.textIndent;
+
+        if (textIndent && textIndent !== '0px') {
+          if (split.lines.length > 0) {
+            split.lines[0].style.paddingLeft = textIndent;
+          }
+          element.style.textIndent = '0';
+        }
+
+        lines.current.push(split.lines);
+      }
     });
 
     gsap.set(lines.current, { y: '100%' });
-
-
 
     const animationProps = {
       y: '0%',
@@ -80,11 +105,19 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
     };
 
     return () => {
+      // Revert SplitText
       splitRef.current.forEach((split) => {
         if (split) {
           split.revert();
         }
-      })
+      });
+      // Unwrap any images from our manual masks
+      masksRef.current.forEach(({ mask, element }) => {
+        if (mask && mask.parentNode) {
+          mask.parentNode.insertBefore(element, mask);
+          mask.parentNode.removeChild(mask);
+        }
+      });
     };
 
   }, { scope: containerRef, dependencies: [animateOnScroll, delay, isReady] });

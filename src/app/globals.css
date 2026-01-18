@@ -6,6 +6,13 @@
   --color-secondary: #E5E5E5;
   --color-muted: #9F9FA9;
   --color-foreground-secondary: #292524;
+  --color-bg-secondary: #e5e5e5;
+
+  /* Case Study Page Colors */
+  --color-accent-pink: #E91E8C;
+  --color-card-bg-light: #F5F5F4;
+  --color-accent-yellow: #FFD93D;
+  --color-accent-brown: #8B6914;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -173,6 +180,11 @@ iframe {
   animation: marquee 10s linear infinite;
 }
 
+.animate-marquee-slow {
+  display: inline-flex;
+  animation: marquee 40s linear infinite;
+}
+
 /* Preloader Styles */
 .preloader {
   position: fixed;
@@ -191,4 +203,24 @@ iframe {
   font-size: 16px;
   font-weight: 700;
   color: var(--color-foreground);
+}
+
+/* Bouncing arrow animation */
+@keyframes bounce-arrow {
+
+  0%,
+  100% {
+    transform: translateY(6px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-bounce-arrow {
+  animation: bounce-arrow 1.5s ease-in-out infinite;
+  animation-delay: 2.5s;
+  /* Wait for initial Copy animation to complete */
+  animation-fill-mode: backwards;
 }

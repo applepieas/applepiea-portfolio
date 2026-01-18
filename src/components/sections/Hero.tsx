@@ -6,6 +6,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Copy from '../ui/Copy';
+import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -151,11 +152,11 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
     gsap.to(
       videoMaskRef.current,
-      { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.4 }
+      { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.8 }
     );
   }, { dependencies: [isMobile, isLoaded] });
 
-  const textDelay = 0.2;
+  const textDelay = 0.3;
 
   return (
     <section ref={containerRef} className='block pb-10 h-[200vh]'>
@@ -198,12 +199,20 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         </Copy>
       </div>
 
-      <Copy animateOnScroll={false} delay={textDelay} className='absolute left-10 bottom-10 font-semibold text-[20px]' isReady={isLoaded}>
+      <Copy animateOnScroll={false} delay={textDelay} className='absolute flex items-center left-[calc(2.5rem-10px)] bottom-8 font-semibold text-[20px]' isReady={isLoaded}>
+        <Image src="/arrow.svg" alt="arrow"
+          width={24}
+          height={24}
+          className='inline-block mr-1 flex-shrink-0 animate-bounce-arrow py-2' />
         <p>SCROLL DOWN</p>
       </Copy>
 
-      <Copy animateOnScroll={false} delay={textDelay} className='absolute right-10 bottom-10 font-semibold text-[20px]' isReady={isLoaded}>
+      <Copy animateOnScroll={false} delay={textDelay} className='absolute flex right-10 bottom-8 font-semibold text-[20px]' isReady={isLoaded}>
         <p>FOR MORE</p>
+        <Image src="/arrow.svg" alt="arrow"
+          width={24}
+          height={24}
+          className='inline-block ml-1 animate-bounce-arrow py-2' />
       </Copy>
 
       <div className='flex justify-center align-center font-semibold text-[20px] h-[100vh]'>
