@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -56,7 +57,9 @@ export default function ProjectCard({
   });
 
   return (
-    <div className="w-full bg-foreground rounded-[20px] p-4 flex flex-col overflow-hidden">
+    <Link
+      href="/case-study"
+      className="w-full bg-foreground rounded-[20px] p-4 flex flex-col overflow-hidden">
       {/* Image Container */}
       <div
         ref={imageContainerRef}
@@ -112,6 +115,6 @@ export default function ProjectCard({
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
