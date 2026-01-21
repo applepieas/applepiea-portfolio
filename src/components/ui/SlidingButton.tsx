@@ -69,9 +69,10 @@ export default function SlidingButton({
 
   const baseClasses = `
     inline-flex items-center justify-center
-    px-6 py-3.5
+    lg:px-6 lg:py-3
+    px-4 py-2
     bg-foreground text-background 
-    rounded-[20px] font-semibold text-[1.25rem]
+    rounded-[20px] font-semibold text-[1rem] lg:text-[1.25rem]
     cursor-pointer
     ${className}
   `.trim();

@@ -11,19 +11,21 @@ import Image from 'next/image';
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const breakpoints = [
-  { maxWidth: 900, translateY: -35, movMultiplier: 450 },
-  { maxWidth: 1100, translateY: -30, movMultiplier: 500 },
-  { maxWidth: 1200, translateY: -25, movMultiplier: 550 },
-  { maxWidth: 1400, translateY: -20, movMultiplier: 600 },
+  { maxWidth: 900, translateY: -35, movMultiplier: 450, scale: 0.65 },
+  { maxWidth: 1024, translateY: -30, movMultiplier: 500, scale: 0.55 },
+  { maxWidth: 1100, translateY: -30, movMultiplier: 500, scale: 0.55 },
+  { maxWidth: 1200, translateY: -20, movMultiplier: 550, scale: 0.55 },
+  { maxWidth: 1300, translateY: -15, movMultiplier: 600, scale: 0.45 },
+  { maxWidth: 1400, translateY: -10, movMultiplier: 600, scale: 0.45 },
 ];
 
 const getInitialValues = (width: number) => {
   for (const bp of breakpoints) {
     if (width <= bp.maxWidth) {
-      return { translateY: bp.translateY, movMultiplier: bp.movMultiplier };
+      return { translateY: bp.translateY, movMultiplier: bp.movMultiplier, scale: bp.scale };
     }
   }
-  return { translateY: -10, movMultiplier: 650 }; // Small offset from center
+  return { translateY: -10, movMultiplier: 650, scale: 0.35 }; // Desktop defaults
 };
 
 interface HeroProps {
@@ -36,16 +38,20 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const videoMaskRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // ScrollTrigger reel animation
-  useGSAP(() => {
-
+  // Check if mobile on mount and resize
+  useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 900;
-      setIsMobile(mobile);
-      return mobile;
+      setIsMobile(window.innerWidth < 770);
     };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
-    if (checkMobile()) return;
+  // ScrollTrigger reel animation (desktop only)
+  useGSAP(() => {
+    // Skip animation setup on mobile
+    if (isMobile) return;
 
     if (!videoRef.current || !containerRef.current) return;
 
@@ -80,18 +86,18 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
     };
 
     const updateInitialState = () => {
-      const { translateY } = getInitialValues(window.innerWidth);
+      const { translateY, scale } = getInitialValues(window.innerWidth);
       // Start slightly above center:  -50 is center, so -60 would be 10% above center
       const startYPercent = -50 + translateY;
 
-      console.log('Hero:  Setting initial state', { translateY, startYPercent });
+      console.log('Hero:  Setting initial state', { translateY, startYPercent, scale });
 
       gsap.killTweensOf(videoRef.current);
 
       gsap.set(videoRef.current, {
         xPercent: -50,
         yPercent: startYPercent,
-        scale: 0.35,
+        scale: scale,
         x: 0,
         autoAlpha: 1,
         transformOrigin: "center center",
@@ -136,32 +142,33 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       if (scrollTween) scrollTween.kill();
     };
 
-  }, { scope: containerRef, dependencies: [] });
+  }, { scope: containerRef, dependencies: [isMobile] });
 
   // Set initial hidden state for video mask (before preloader completes)
   useGSAP(() => {
-    if (isMobile || !videoMaskRef.current) return;
+    if (!videoMaskRef.current) return;
 
     // Set initial state - hidden above the screen
     gsap.set(videoMaskRef.current, { yPercent: -100 });
-  }, { dependencies: [isMobile] });
+  }, { dependencies: [] });
 
   // Video mask reveal animation (from top) - wait for preloader
   useGSAP(() => {
-    if (isMobile || !videoMaskRef.current || !isLoaded) return;
+    if (!videoMaskRef.current || !isLoaded) return;
 
     gsap.to(
       videoMaskRef.current,
       { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.8 }
     );
-  }, { dependencies: [isMobile, isLoaded] });
+  }, { dependencies: [isLoaded] });
 
   const textDelay = 0.3;
 
   return (
     <section ref={containerRef} className='block pb-10 h-[200vh]'>
-      <div className="intro">
-        {!isMobile && (
+      {/* Desktop: Animated video with scroll effects */}
+      {!isMobile && (
+        <div className="intro">
           <div ref={videoRef} className="video-mask" style={{ visibility: isLoaded ? 'visible' : 'hidden' }}>
             <div ref={videoMaskRef} className="video-container-desktop">
               <div className="video-preview">
@@ -178,11 +185,41 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Mobile: Static video, no animations, 100vw width, 16:9 aspect ratio */}
+      {isMobile && (
+        <div className="w-full pt-24" style={{ visibility: isLoaded ? 'visible' : 'hidden' }}>
+          <div className="w-full aspect-video rounded-2xl overflow-hidden bg-black">
+            <iframe
+              src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
+              frameBorder="0"
+              allow='autoplay; fullscreen; picture-in-picture'
+              className='pointer-events-none'
+              style={{ position: 'relative', width: '100%', height: '100%' }}
+              loading='lazy'
+              title='fish video'
+            ></iframe>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile: "A PRETTY DECENT" at top under header */}
+      <div className='flex justify-between font-semibold text-[1rem] uppercase absolute top-20 left-5 right-8 lg:hidden'>
+        <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
+          <p className="ml-4">A</p>
+        </Copy>
+        <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
+          <p>PRETTY</p>
+        </Copy>
+        <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
+          <p>DECENT</p>
+        </Copy>
       </div>
 
-      <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8'>
-        <div className='flex justify-between font-semibold text-[20px]'>
+      <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8 lg:left-5 lg:right-8 max-lg:left-0 max-lg:right-0 max-lg:px-5 overflow-visible z-100 max-lg:text-center text-[20px]'>
+        <div className='flex justify-between font-semibold text-lg hidden lg:flex'>
           <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <p className="ml-4">A</p>
           </Copy>
@@ -194,12 +231,17 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
           </Copy>
         </div>
 
-        <Copy animateOnScroll={false} delay={textDelay} className='w-full' isReady={isLoaded}>
-          <h1 className='font-bold text-[208px] tracking-tighter leading-[0.85] whitespace-nowrap'>DESIGN ENGINEER</h1>
+
+        <Copy animateOnScroll={false} delay={textDelay} className='w-full overflow-visible' isReady={isLoaded}>
+          <h1 className='font-bold hero-title text-[11.5vw] max-lg:text-[20vw] w-full whitespace-nowrap max-lg:whitespace-normal max-lg:text-center tracking-tighter leading-[0.85] md:align-middle'>
+            <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>DESIGN</span>
+            <span className='inline max-lg:hidden'> </span>
+            <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>ENGINEER</span>
+          </h1>
         </Copy>
       </div>
 
-      <Copy animateOnScroll={false} delay={textDelay} className='absolute flex items-center left-[calc(2.5rem-10px)] bottom-8 font-semibold text-[20px]' isReady={isLoaded}>
+      <Copy animateOnScroll={false} delay={textDelay} className='absolute flex items-center left-[calc(2.5rem-10px)] bottom-8 font-semibold text-[18px] lg:text-[20px] hidden lg:flex' isReady={isLoaded}>
         <Image src="/arrow.svg" alt="arrow"
           width={24}
           height={24}
@@ -207,7 +249,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         <p>SCROLL DOWN</p>
       </Copy>
 
-      <Copy animateOnScroll={false} delay={textDelay} className='absolute flex right-10 bottom-8 font-semibold text-[20px]' isReady={isLoaded}>
+      <Copy animateOnScroll={false} delay={textDelay} className='absolute flex right-10 bottom-8 font-semibold text-[18px] lg:text-[20px] hidden lg:flex' isReady={isLoaded}>
         <p>FOR MORE</p>
         <Image src="/arrow.svg" alt="arrow"
           width={24}

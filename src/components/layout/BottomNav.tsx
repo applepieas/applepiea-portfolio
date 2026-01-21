@@ -142,9 +142,15 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
         ease: 'power2.out',
       });
 
-      // 4. WIDTH COLLAPSE
+      // 4. WIDTH COLLAPSE - use responsive width based on screen size
+      let collapsedWidth = 'calc(100vw - 40px)'; // mobile default
+      if (window.innerWidth >= 1024) {
+        collapsedWidth = '38vw'; // lg+
+      } else if (window.innerWidth >= 768) {
+        collapsedWidth = '80vw'; // md
+      }
       tl.to(containerRef.current, {
-        width: '38vw',
+        width: collapsedWidth,
         duration: 0.5,
         ease: 'power3.inOut',
       }, '-=0.2');
@@ -213,12 +219,12 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
   return (
     <nav
       ref={navRef}
-      className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50"
+      className="fixed sm:bottom-3 bottom-5  left-1/2 -translate-x-1/2 z-[1000]"
       style={{ visibility: isLoaded ? 'visible' : 'hidden' }}
     >
       <div
         ref={containerRef}
-        className="flex flex-col bg-foreground text-background rounded-2xl shadow-2xl w-[38vw] min-h-[96px] overflow-hidden"
+        className="flex flex-col bg-foreground text-background rounded-2xl shadow-2xl w-[calc(100vw_-_40px)] md:w-[80vw] lg:w-[38vw] overflow-hidden"
       >
 
         {/* Footer Mode Content - 3 larger sections with text */}
@@ -243,7 +249,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
                 {/* Text with mask reveal - fixed height container */}
                 <div className="overflow-hidden h-[40px] flex items-center justify-center relative z-10">
                   <span
-                    className="footer-text block text-[32px] font-semibold text-center transition-colors duration-300 group-hover:text-foreground"
+                    className="footer-text block text-[30px] md:text-[32px] font-semibold text-center transition-colors duration-300 group-hover:text-foreground"
                     style={{ transform: 'translateY(110%)' }}
                   >
                     {link.name}
@@ -262,7 +268,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
         >
           <div className="flex items-center justify-between px-6 py-4">
             {/* Copyright */}
-            <span className="text-[14px] text-background/50 font-medium">
+            <span className="text-[12px] md:text-[14px] text-background/50 font-medium">
               © {new Date().getFullYear()} All Rights Reserved
             </span>
 
@@ -302,7 +308,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="menu-item flex items-center gap-6 py-2 px-2 text-[20px] font-semibold rounded-xl hover:bg-background/10 transition-colors"
+                  className="menu-item flex items-center gap-6 py-2 px-2 text-[18px] md:text-[20px] font-semibold rounded-xl hover:bg-background/10 transition-colors"
                   style={{ opacity: 0 }}
                   onClick={() => setIsOpen(false)}
                 >
@@ -327,7 +333,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
         <div ref={mainBarRef} className="flex items-center px-2 py-2 gap-4 overflow-hidden">
 
           {/* Left: Profile Image */}
-          <div className="w-20 h-20 rounded-xl overflow-hidden bg-background flex-shrink-0">
+          <div className="w-16 h-16 sm:w-[76px] sm:h-[76px] rounded-xl overflow-hidden bg-background flex-shrink-0">
             <Image
               src="/image.png"
               alt="Profile"
@@ -338,16 +344,16 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
           </div>
 
           {/* Center: Name and Marquee */}
-          <div className="flex flex-col flex-1 overflow-hidden mx-2">
-            <span className="text-base font-semibold text-[18px] mb-2">PAVEL ROSENBERG</span>
+          <div className="flex flex-col flex-1 overflow-hidden mx-2 justify-center">
+            <span className="text-base font-semibold text-[16px] md:text-[18px]">PAVEL ROSENBERG</span>
             <div className="relative overflow-hidden w-full">
               <div className="absolute -left-1 -top-1 -bottom-1 w-14 bg-gradient-to-r from-foreground from-20% to-transparent z-10 pointer-events-none"></div>
               <div className="absolute -right-1 -top-1 -bottom-1 w-14 bg-gradient-to-l from-foreground from-20% to-transparent z-10 pointer-events-none"></div>
-              <div className="flex whitespace-nowrap animate-marquee px-1">
-                <span className="text-[16px] text-bg-secondary font-400">
+              <div className="flex whitespace-nowrap animate-marquee px-1 mt-2">
+                <span className="text-[14px] md:text-[16px] text-bg-secondary font-400">
                   DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp;&nbsp;
                 </span>
-                <span className="text-[16px] text-bg-secondary font-400">
+                <span className="text-[14px] md:text-[16px] text-bg-secondary font-400">
                   DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp;&nbsp;
                 </span>
               </div>

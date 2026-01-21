@@ -141,7 +141,8 @@ export default function About() {
   return (
     <div ref={containerRef} className="relative mt-32 mx-10 h-[600vh] w-full">
       <section className="sticky top-0 left-0 w-full h-screen overflow-hidden">
-        <div className="about-copy absolute left-14 top-1/2 w-full transform -translate-y-1/2 px-8 flex gap-16">
+        <div className="about-copy absolute left-14 top-1/2 w-full transform -translate-y-1/2 px-8 flex lg:flex-row flex-col gap-20 lg:gap-16 max-w-[1200px] lg:max-w-400px">
+
           {["Really into combining development and design into one smooth experience for users.",
             "I help bring products to life with focus on detail, performance and purposeful motion.",
             "Crafting full-stack applications for all kinds of systems, web experiences and modern ideas."
