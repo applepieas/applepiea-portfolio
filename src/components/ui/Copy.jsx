@@ -6,10 +6,12 @@ import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 import React from 'react';
+import { useGSAPResize } from '@/components/providers/GSAPProvider';
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
 export default function Copy({ children, animateOnScroll = true, delay = 0, className = '', isReady = true }) {
+  const { resizeKey } = useGSAPResize();
   const containerRef = useRef(null);
   const elementRef = useRef([]);
   const splitRef = useRef([]);
@@ -120,7 +122,7 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
       });
     };
 
-  }, { scope: containerRef, dependencies: [animateOnScroll, delay, isReady] });
+  }, { scope: containerRef, dependencies: [animateOnScroll, delay, isReady, resizeKey] });
 
   // Hide content when isReady is false (before preloader completes)
   const hiddenStyle = !isReady ? { visibility: 'hidden' } : {};

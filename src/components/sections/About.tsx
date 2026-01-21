@@ -139,16 +139,18 @@ export default function About() {
   }, [lenis]);
 
   return (
-    <div ref={containerRef} className="relative mt-32 mx-10 h-[600vh] w-full">
+    <div ref={containerRef} className="relative mt-0 lg:mt-32 mx-10 h-[600vh] w-full">
       <section className="sticky top-0 left-0 w-full h-screen overflow-hidden">
-        <div className="about-copy absolute left-14 top-1/2 w-full transform -translate-y-1/2 px-8 flex lg:flex-row flex-col gap-20 lg:gap-16 max-w-[1200px] lg:max-w-400px">
+        <div className="absolute pb-20 lg:pb-0 inset-0 flex justify-center items-center px-8 max-w-7xl mx-auto flex-col lg:flex-row gap-20 lg:gap-24">
 
           {["Really into combining development and design into one smooth experience for users.",
             "I help bring products to life with focus on detail, performance and purposeful motion.",
             "Crafting full-stack applications for all kinds of systems, web experiences and modern ideas."
           ].map((text, i) => (
             <div key={i} className="copy-block">
-              <p ref={(el) => { copyBlocksRef.current[i] = el; }}>{text}</p>
+              <p ref={(el) => { copyBlocksRef.current[i] = el; }}
+                className="text-[1.75rem] font-semibold -tracking-[0.025rem] leading-[2rem]"
+              >{text}</p>
             </div>
           ))}
         </div>

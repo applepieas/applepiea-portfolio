@@ -55,23 +55,23 @@ export default function Projects() {
   });
 
   return (
-    <section className="w-full px-8 py-32">
+    <section className="w-full px-3 lg:px-6 pt-32">
       {/* Header section */}
-      <div className="mb-4 flex justify-between items-end">
+      <div className="mb-4 flex justify-between items-end text-[12vw] font-bold leading-none tracking-tighter uppercase">
         <Copy animateOnScroll={true} delay={0}>
-          <h2 className="text-[208.5px] font-bold leading-none tracking-tighter uppercase">
+          <h2>
             Projects
           </h2>
         </Copy>
         <Copy animateOnScroll={true} delay={0.1}>
-          <span className="text-[208.5px] font-bold leading-none tracking-tighter uppercase">
+          <span>
             &apos;26
           </span>
         </Copy>
       </div>
 
       {/* Projects grid - 1 column on mobile, 2 columns on tablet/desktop */}
-      <div ref={cardsContainerRef} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div ref={cardsContainerRef} className="flex flex-col lg:grid lg:grid-cols-2 md:grid-cols-2 gap-4">
         {projects.map((project) => (
           <div key={project.title} className="project-card">
             <ProjectCard
@@ -85,6 +85,7 @@ export default function Projects() {
           </div>
         ))}
       </div>
+
     </section>
   );
 }

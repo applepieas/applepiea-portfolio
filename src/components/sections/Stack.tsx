@@ -188,7 +188,7 @@ export default function Stack() {
 
       {/* --- Section Header --- */}
       <div className="text-center mb-16 px-10 pb-32">
-        <h2 ref={headingRef} className="font-bold text-[80px] md:text-[140px] lg:text-[209px] uppercase tracking-[-0.03em] leading-[0.85]">
+        <h2 ref={headingRef} className="font-bold text-[clamp(11.5vw,20vw,11.5vw)] uppercase tracking-[-0.03em] leading-[0.85]">
           Modern
           <br />
           Techstack
@@ -196,7 +196,7 @@ export default function Stack() {
       </div>
 
       {/* --- Logo Grid Container --- */}
-      <div className="px-10">
+      <div className="px-0 md:px-5">
 
         {/* --- Logo Grid --- */}
         <div ref={gridRef} className="relative grid grid-cols-2 md:grid-cols-4 overflow-hidden">
@@ -229,7 +229,7 @@ export default function Stack() {
               rel="noopener noreferrer"
               className={`
                 relative flex items-center justify-center
-                h-[180px] md:h-[280px] lg:h-[350px]
+                h-[280px] md:h-[280px] lg:h-[350px]
                 ${borderClasses[index]}
               `}
               onMouseEnter={() => setActiveIndex(index)}
@@ -242,7 +242,7 @@ export default function Stack() {
                 height={120}
                 className={`
                   relative z-20
-                  w-12 h-12 md:w-[72px] md:h-[72px] lg:w-24 lg:h-24
+                  w-16 h-16 md:w-[72px] md:h-[72px] lg:w-24 lg:h-24
                   object-contain transition-all duration-300
                   ${activeIndex === index ? "invert" : ""}
                 `}

@@ -76,20 +76,21 @@ export default function Services() {
   });
 
   return (
-    <section className="w-full px-6 py-64">
+    <section className="w-full px-3 lg:px-6 py-64">
       {/* Dark container with rounded corners */}
-      <div className="bg-foreground text-background rounded-3xl h-full p-5 pt-25 flex flex-col">
+      <div className="bg-foreground text-background rounded-3xl h-full p-5 pt-6 lg:pt-25 flex flex-col">
 
         {/* Header section */}
-        <div className="mb-16 grid grid-cols-12 gap-8">
-          <div className="col-span-10 col-start-3">
+
+        <div className="mb-6 ml-1 lg:ml-0 lg:mb-16 grid grid-cols-12 gap-6 lg:gap-8">
+          <div className="col-span-12 lg:col-span-10 lg:col-start-3">
             <Copy animateOnScroll={true} delay={0}>
-              <p className="text-muted text-sm font-semibold uppercase tracking-wider mb-6">
+              <p className="text-muted text-[clamp(14px,0.8vw,18px)] font-semibold uppercase tracking-wider mb-6">
                 Services
               </p>
             </Copy>
             <Copy animateOnScroll={true} delay={0.1}>
-              <h2 className="text-14 md:text-5xl lg:text-[3.5rem] font-medium leading-tight">
+              <h2 className="text-[clamp(24px,3.3vw,56px)] font-medium leading-tight">
                 Building things that work and look good. From the first sketch to the final deploy, I combine design and full-stack development to turn complex ideas into sharp, high-impact digital reality
               </h2>
             </Copy>
@@ -99,42 +100,43 @@ export default function Services() {
         {/* Services list */}
         <div className="bg-foreground-secondary rounded-3xl h-full px-5 py-10 mt-10 flex flex-col">
           <div className="flex-1 flex flex-col">
+
             {services.map((service, index) => (
               <div key={service.number}>
 
                 {/* Service row */}
-                <div className="grid grid-cols-12 gap-8 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-8 items-start">
                   {/* Number */}
-                  <div className="col-span-2">
+                  <div className="lg:col-span-2 mb-3">
                     <Copy animateOnScroll={true} delay={0}>
-                      <span className="text-muted text-sm font-medium">
+                      <span className="text-muted text-[clamp(14px,0.8vw,18px)] font-medium">
                         {service.number}
                       </span>
                     </Copy>
                   </div>
 
                   {/* Title */}
-                  <div className="col-span-4 leading-none">
+                  <div className="lg:col-span-4 leading-none mb-6">
                     <Copy animateOnScroll={true} delay={0.05}>
-                      <h3 className="text-[56px] font-medium">
+                      <h3 className="text-[clamp(24px,3.3vw,56px)] font-medium">
                         {service.title}
                       </h3>
                     </Copy>
                   </div>
 
                   {/* Description */}
-                  <div className="col-span-3">
+                  <div className="lg:col-span-3 mb-9 lg:mb-0">
                     <Copy animateOnScroll={true} delay={0.1}>
-                      <p className="text-[20px] text-[#e5e5e5] leading-relaxed max-w-xs">
+                      <p className="text-[clamp(16px,1.2vw,20px) text-[#e5e5e5] leading-relaxed lg:max-w-xs">
                         {service.description}
                       </p>
                     </Copy>
-                    <Copy animateOnScroll={true} delay={0.15} className="mt-6">
+                    <Copy animateOnScroll={true} delay={0.15} className="mt-3 lg:mt-6">
                       <div className="flex flex-wrap gap-2">
                         {service.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="inline-block mr-2 px-4 py-1.75 bg-[#525252]/30 text-sm font-medium rounded-lg uppercase text-[#e5e5e5] tracking-wide box-border"
+                            className="inline-block mr-2 px-4 py-1.75 bg-[#525252]/40 text-sm font-normal rounded-lg uppercase text-[#e5e5e5] tracking-wide box-border"
                           >
                             {tag}
                           </span>
@@ -144,10 +146,10 @@ export default function Services() {
                   </div>
 
                   {/* Image with mask reveal and parallax */}
-                  <div className="col-span-3">
+                  <div className="lg:col-span-3">
                     <div
                       ref={(el) => { imageRefs.current[index] = el; }}
-                      className="w-[400px] h-[300px] rounded-xl overflow-hidden"
+                      className="w-full h-[calc(200px_+_4.4vw)] md:h-[calc(400px_+_4.4vw)] lg:h-[320px] rounded-xl overflow-hidden"
                     >
                       <div className="image-inner relative w-full h-[120%]">
                         <Image

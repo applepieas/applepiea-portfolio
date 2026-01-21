@@ -167,7 +167,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const textDelay = 0.3;
 
   return (
-    <section ref={containerRef} className='block pb-10 h-[200vh]'>
+    <section ref={containerRef} className='block pb-10 h-[100vh] md:h-[120vh] lg:h-[200vh] bg-[red]'>
       {/* Desktop: Animated video with scroll effects */}
       {!isMobile && (
         <div className="intro">
@@ -176,10 +176,10 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
               <div className="video-preview">
                 <div className="video-wrapper">
                   <iframe
-                    src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
+                    src="https://www.youtube.com/embed/dksakBacaik?autoplay=1&mute=1&loop=1&playlist=dksakBacaik&controls=0&playsinline=1"
                     frameBorder="0"
                     allow='autoplay; fullscreen; picture-in-picture'
-                    className='pointer-events-none'
+                    className='iframe-desktop pointer-events-none'
                     loading='lazy'
                     title='fish video'
                   ></iframe>
@@ -192,40 +192,33 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
       {/* Mobile: Static video with initial reveal animation, no scroll/mouse animations */}
       {isMobile && (
-        <div className="intro-mobile">
-          <div ref={videoRef} className="video-mask-mobile" style={{ visibility: isLoaded ? 'visible' : 'hidden' }}>
-            <div ref={videoMaskRef} className="video-container-desktop">
-              <div className="video-preview">
-                <div className="video-wrapper">
-                  <iframe
-                    src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
-                    frameBorder="0"
-                    allow='autoplay; fullscreen; picture-in-picture'
-                    className='pointer-events-none'
-                    loading='lazy'
-                    title='fish video'
-                  ></iframe>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className='w-[90vw] aspect-video mx-auto mt-32 rounded-2xl overflow-hidden isolate'>
+          <iframe
+            src="https://www.youtube.com/embed/dksakBacaik?autoplay=1&mute=1&loop=1&playlist=dksakBacaik&controls=0&playsinline=1"
+            frameBorder="0"
+            allow='autoplay; fullscreen; picture-in-picture'
+            className='w-full h-full pointer-events-none rounded-2xl'
+            loading='lazy'
+            title='fish video'
+          />
         </div>
+
       )}
 
       {/* Mobile: "A PRETTY DECENT" at top under header */}
-      <div className='flex justify-between font-semibold text-[1rem] uppercase absolute top-20 left-5 right-8 lg:hidden'>
+      <div className='flex justify-between font-semibold text-[14px] uppercase absolute top-20 left-5 right-8 lg:hidden'>
         <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
           <p className="ml-4">A</p>
         </Copy>
         <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
-          <p>PRETTY</p>
+          <p className="ml-6">PRETTY</p>
         </Copy>
         <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
           <p>DECENT</p>
         </Copy>
       </div>
 
-      <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8 lg:left-5 lg:right-8 max-lg:left-0 max-lg:right-0 max-lg:px-5 overflow-visible z-100 max-lg:text-center text-[20px]'>
+      <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8 lg:left-5 lg:right-8 max-lg:left-0 max-lg:right-0 max-lg:px-5 z-100 max-lg:text-center text-[20px] overflow-visible'>
         <div className='flex justify-between font-semibold text-lg hidden lg:flex'>
           <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <p className="ml-4">A</p>
@@ -239,8 +232,8 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         </div>
 
 
-        <Copy animateOnScroll={false} delay={textDelay} className='w-full overflow-visible' isReady={isLoaded}>
-          <h1 className='font-bold hero-title text-[11.5vw] max-lg:text-[20vw] w-full whitespace-nowrap max-lg:whitespace-normal max-lg:text-center tracking-tighter leading-[0.85] md:align-middle'>
+        <Copy animateOnScroll={false} delay={textDelay} className='w-full ' isReady={isLoaded}>
+          <h1 className='font-bold hero-title text-[clamp(11.5vw,20vw,11.5vw)] max-lg:text-[20vw] w-full whitespace-nowrap max-lg:whitespace-normal max-lg:text-center tracking-tighter leading-[0.85] md:align-middle overflow-visible'>
             <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>DESIGN</span>
             <span className='inline max-lg:hidden'> </span>
             <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>ENGINEER</span>

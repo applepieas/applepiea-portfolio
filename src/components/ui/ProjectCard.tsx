@@ -77,7 +77,7 @@ export default function ProjectCard({
       <div className="flex justify-between items-center py-4 px-2">
         {/* Left: Author */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-secondary flex-shrink-0">
+          <div className="w-[clamp(32px,2.5vw,40px)] h-[clamp(32px,2.5vw,40px)] rounded-full overflow-hidden bg-secondary flex-shrink-0">
             <Image
               src={authorIcon}
               alt={authorName}
@@ -86,17 +86,17 @@ export default function ProjectCard({
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="text-background font-semibold text-[18px] uppercase tracking-wide">
+          <span className="text-background font-semibold text-[clamp(16px,1.2vw,20px)] uppercase tracking-wide">
             {authorName}
           </span>
         </div>
 
         {/* Right: Category & Year */}
         <div className="flex items-center gap-2">
-          <span className="text-background/60 font-semibold text-[18px] uppercase tracking-wide">
+          <span className="text-background/60 font-semibold text-[clamp(14px,1.2vw,18px)] uppercase tracking-wide">
             {category}
           </span>
-          <span className="text-background/60 font-semibold text-[18px] uppercase tracking-wide">
+          <span className="text-background/60 font-semibold text-[clamp(14px,1.2vw,18px)] uppercase tracking-wide">
             {year}
           </span>
         </div>
@@ -107,10 +107,10 @@ export default function ProjectCard({
         <div className="absolute -left-1 -top-1 -bottom-1 w-14 bg-gradient-to-r from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
         <div className="absolute -right-1 -top-1 -bottom-1 w-14 bg-gradient-to-l from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
         <div className="animate-marquee-slow inline-flex">
-          <span className="text-bg-secondary text-[18px] font-400 uppercase tracking-wider">
+          <span className="text-bg-secondary text-[clamp(16px,1.2vw,20px)] font-400 uppercase tracking-wider">
             {marqueeText}{marqueeText}{marqueeText}{marqueeText}
           </span>
-          <span className="text-bg-secondary text-[18px] font-400 uppercase tracking-wider">
+          <span className="text-bg-secondary text-[clamp(16px,1.2vw,20px)] font-400 uppercase tracking-wider">
             {marqueeText}{marqueeText}{marqueeText}{marqueeText}
           </span>
         </div>
