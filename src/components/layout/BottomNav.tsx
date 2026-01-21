@@ -312,7 +312,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
                   style={{ opacity: 0 }}
                   onClick={() => setIsOpen(false)}
                 >
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-background flex-shrink-0">
+                  <div className="w-16 h-16 sm:w-[76px] sm:h-[76px] rounded-xl overflow-hidden bg-background flex-shrink-0">
                     <Image
                       src="/image.png"
                       alt="Profile"
@@ -325,7 +325,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
                 </a>
               ))}
             </div>
-            <div className="menu-divider h-px bg-background/20 mx-3 my-2" style={{ opacity: 0 }}></div>
+            <div className="menu-divider h-px bg-background/20 mx-3 my-1 lg:my-2" style={{ opacity: 0 }}></div>
           </div>
         )}
 

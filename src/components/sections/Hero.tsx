@@ -12,8 +12,8 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const breakpoints = [
   { maxWidth: 900, translateY: -35, movMultiplier: 450, scale: 0.65 },
-  { maxWidth: 1024, translateY: -30, movMultiplier: 500, scale: 0.55 },
-  { maxWidth: 1100, translateY: -30, movMultiplier: 500, scale: 0.55 },
+  { maxWidth: 1024, translateY: -20, movMultiplier: 500, scale: 0.55 },
+  { maxWidth: 1100, translateY: -20, movMultiplier: 500, scale: 0.55 },
   { maxWidth: 1200, translateY: -20, movMultiplier: 550, scale: 0.55 },
   { maxWidth: 1300, translateY: -15, movMultiplier: 600, scale: 0.45 },
   { maxWidth: 1400, translateY: -10, movMultiplier: 600, scale: 0.45 },
@@ -167,7 +167,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const textDelay = 0.3;
 
   return (
-    <section ref={containerRef} className='block pb-10 h-[100vh] md:h-[120vh] lg:h-[200vh] bg-[red]'>
+    <section ref={containerRef} className='block pb-10 h-[100vh] md:h-[120vh] lg:h-[200vh] bg-background'>
       {/* Desktop: Animated video with scroll effects */}
       {!isMobile && (
         <div className="intro">

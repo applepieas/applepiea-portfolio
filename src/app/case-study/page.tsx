@@ -19,7 +19,7 @@ export default function CaseStudy() {
           - Responsive padding and gaps using clamp()
           ============================================ */}
       <div
-        className="flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] mx-4 lg:mx-6 mt-24"
+        className="flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-6 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] mx-4 lg:mx-6 mt-24"
         style={{ backgroundColor: 'var(--color-foreground)' }}
       >
 
@@ -142,7 +142,7 @@ export default function CaseStudy() {
           <div className="flex flex-col gap-4 lg:gap-5">
 
             {/* Full width image 1 */}
-            <div className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)] rounded-lg lg:rounded-xl overflow-hidden relative">
+            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
               <Image
                 alt="Jazmin Wong"
                 fill
@@ -153,7 +153,7 @@ export default function CaseStudy() {
             </div>
 
             {/* Video placeholder (using image for now) */}
-            <div className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)] rounded-lg lg:rounded-xl overflow-hidden relative">
+            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
               <Image
                 alt="Jazmin Wong video"
                 fill
@@ -165,7 +165,7 @@ export default function CaseStudy() {
 
             {/* Split layout: 2 images side by side */}
             <div className="flex gap-4 lg:gap-5">
-              <div className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)] rounded-lg lg:rounded-xl overflow-hidden relative">
+              <div className="w-1/2 h-[40vw] rounded-lg lg:rounded-xl overflow-hidden relative">
                 <Image
                   alt="Jazmin Wong"
                   fill
@@ -175,7 +175,7 @@ export default function CaseStudy() {
                 />
               </div>
 
-              <div className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)] rounded-lg lg:rounded-xl overflow-hidden relative">
+              <div className="w-1/2 h-[40vw] rounded-lg lg:rounded-xl overflow-hidden relative">
                 <Image
                   alt="Jazmin Wong"
                   fill
@@ -187,7 +187,7 @@ export default function CaseStudy() {
             </div>
 
             {/* Full width image 2 */}
-            <div className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)] rounded-lg lg:rounded-xl overflow-hidden relative">
+            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
               <Image
                 alt="Jazmin Wong"
                 fill
@@ -198,7 +198,7 @@ export default function CaseStudy() {
             </div>
 
             {/* Full width image 3 */}
-            <div className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)] rounded-lg lg:rounded-xl overflow-hidden relative">
+            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
               <Image
                 alt="Jazmin Wong"
                 fill
