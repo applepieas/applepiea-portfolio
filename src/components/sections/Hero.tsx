@@ -140,6 +140,8 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', updateInitialState);
       if (scrollTween) scrollTween.kill();
+      // Kill all ScrollTriggers in this scope when switching views
+      ScrollTrigger.getAll().forEach(t => t.kill());
     };
 
   }, { scope: containerRef, dependencies: [isMobile] });
@@ -149,8 +151,8 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
     if (!videoMaskRef.current) return;
 
     // Set initial state - hidden above the screen
-    gsap.set(videoMaskRef.current, { yPercent: -100 });
-  }, { dependencies: [] });
+    gsap.set(videoMaskRef.current, { yPercent: -110 });
+  }, { dependencies: [isMobile] }); // Re-run when mobile state changes
 
   // Video mask reveal animation (from top) - wait for preloader
   useGSAP(() => {
@@ -160,7 +162,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       videoMaskRef.current,
       { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.8 }
     );
-  }, { dependencies: [isLoaded] });
+  }, { dependencies: [isLoaded, isMobile] }); // Re-run when mobile state or load state changes
 
   const textDelay = 0.3;
 
@@ -188,19 +190,24 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         </div>
       )}
 
-      {/* Mobile: Static video, no animations, 100vw width, 16:9 aspect ratio */}
+      {/* Mobile: Static video with initial reveal animation, no scroll/mouse animations */}
       {isMobile && (
-        <div className="w-full pt-24" style={{ visibility: isLoaded ? 'visible' : 'hidden' }}>
-          <div className="w-full aspect-video rounded-2xl overflow-hidden bg-black">
-            <iframe
-              src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
-              frameBorder="0"
-              allow='autoplay; fullscreen; picture-in-picture'
-              className='pointer-events-none'
-              style={{ position: 'relative', width: '100%', height: '100%' }}
-              loading='lazy'
-              title='fish video'
-            ></iframe>
+        <div className="intro-mobile">
+          <div ref={videoRef} className="video-mask-mobile" style={{ visibility: isLoaded ? 'visible' : 'hidden' }}>
+            <div ref={videoMaskRef} className="video-container-desktop">
+              <div className="video-preview">
+                <div className="video-wrapper">
+                  <iframe
+                    src="https://www.youtube.com/embed/haJfJAwpViI?autoplay=1&mute=1&loop=1&playlist=haJfJAwpViI&controls=0&playsinline=1"
+                    frameBorder="0"
+                    allow='autoplay; fullscreen; picture-in-picture'
+                    className='pointer-events-none'
+                    loading='lazy'
+                    title='fish video'
+                  ></iframe>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

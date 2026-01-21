@@ -51,6 +51,14 @@ body {
   z-index: 900;
 }
 
+.intro-mobile {
+  position: relative;
+  top: 12%;
+  height: 100vh;
+  width: 100%;
+  z-index: 900;
+}
+
 .video-mask {
   position: absolute;
   top: 25%;
@@ -58,6 +66,16 @@ body {
   transform: translateX(-50%);
   width: 1800px;
   max-width: calc(100vw - 60px);
+  overflow: hidden;
+  z-index: 900;
+}
+
+.video-mask-mobile {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100vw - 40px);
   overflow: hidden;
   z-index: 900;
 }
