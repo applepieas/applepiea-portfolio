@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import React from 'react';
 import { useGSAPResize } from '@/components/providers/GSAPProvider';
 
@@ -17,6 +17,8 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
   const splitRef = useRef([]);
   const lines = useRef([]);
   const masksRef = useRef([]);
+  // Start hidden to prevent flash before GSAP takes control
+  const [initialHidden, setInitialHidden] = useState(true);
 
   useGSAP(() => {
 
@@ -85,6 +87,9 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
 
     gsap.set(lines.current, { y: '100%' });
 
+    // Content is now positioned, reveal it
+    setInitialHidden(false);
+
     const animationProps = {
       y: '0%',
       duration: 1.5,
@@ -124,8 +129,8 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
 
   }, { scope: containerRef, dependencies: [animateOnScroll, delay, isReady, resizeKey] });
 
-  // Hide content when isReady is false (before preloader completes)
-  const hiddenStyle = !isReady ? { visibility: 'hidden' } : {};
+  // Hide content when isReady is false (before preloader completes) OR before GSAP has set initial positions
+  const hiddenStyle = (!isReady || initialHidden) ? { visibility: 'hidden' } : {};
 
   return (
     <div ref={containerRef} className={className} data-copy-wrapper="true" style={hiddenStyle}>
