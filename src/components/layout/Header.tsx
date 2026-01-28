@@ -43,7 +43,7 @@ export default function Header({ isLoaded = false }: HeaderProps) {
             <span className="font-semibold text-foreground">Local time</span>
           </Copy>
           <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
-            <span className="font-medium text-muted">{new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+            <span className="font-medium text-muted">{new Date().toLocaleTimeString('en-US', { timeZone: 'Europe/Prague', hour: '2-digit', minute: '2-digit', hour12: true })}</span>
           </Copy>
         </div>
 
