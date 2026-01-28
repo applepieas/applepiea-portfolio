@@ -34,21 +34,58 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
   const mainBarRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isFooterMode, setIsFooterMode] = useState(false);
+  // Track current breakpoint to re-run animation when crossing any breakpoint
+  const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
 
-  // Initial slide-up animation
+  // Detect breakpoint changes for all 3 breakpoints (mobile < 768, tablet 768-1023, desktop >= 1024)
+  useEffect(() => {
+    const getBreakpoint = () => {
+      if (window.innerWidth >= 1024) return 'desktop';
+      if (window.innerWidth >= 768) return 'tablet';
+      return 'mobile';
+    };
+
+    const handleResize = () => {
+      setBreakpoint(getBreakpoint());
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Initial slide-up animation - re-runs on any breakpoint change to prevent stale states
   useGSAP(() => {
-    if (!navRef.current || !isLoaded) return;
+    if (!navRef.current || !containerRef.current || !isLoaded) return;
 
+    // Kill any existing animations on the nav and container elements
+    gsap.killTweensOf(navRef.current);
+    gsap.killTweensOf(containerRef.current);
+
+    // Reset container width based on current breakpoint (matches CSS breakpoints)
+    const responsiveWidths = {
+      mobile: 'calc(100vw - 40px)',
+      tablet: '80vw',
+      desktop: '38vw'
+    };
+    gsap.set(containerRef.current, { width: responsiveWidths[breakpoint] });
+
+    // Reset and re-animate to ensure clean state after resize
     gsap.fromTo(
       navRef.current,
       { yPercent: 125, scale: 0.75 },
       { yPercent: 0, scale: 1, duration: 1, ease: 'power3.out', delay: 0.8 }
     );
-  }, { dependencies: [isLoaded] });
+  }, { dependencies: [isLoaded, breakpoint] });
 
-  // Footer mode scroll trigger
+  // Footer mode scroll trigger - only on desktop and tablet, not mobile
   useGSAP(() => {
     if (!containerRef.current || !isLoaded) return;
+
+    // Skip footer expansion on mobile
+    if (breakpoint === 'mobile') {
+      setIsFooterMode(false);
+      return;
+    }
 
     ScrollTrigger.create({
       trigger: 'body',
@@ -61,101 +98,116 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
-  }, { dependencies: [isLoaded] });
+  }, { dependencies: [isLoaded, breakpoint] });
 
-  // Footer mode expansion animation - simple two-phase approach
+  // Footer mode expansion animation - smooth two-phase approach (desktop/tablet only)
   useGSAP(() => {
     if (!containerRef.current || !navRef.current) return;
+    // Skip footer expansion animation on mobile
+    if (breakpoint === 'mobile') return;
 
     const tl = gsap.timeline();
 
     if (isFooterMode) {
-      // Step 1: Hide main bar instantly (opacity only)
+      // Set min-height to prevent shrinking during phase 1, while still allowing expansion
+      const currentHeight = containerRef.current.offsetHeight;
+      tl.set(containerRef.current, { minHeight: currentHeight });
+
+      // PHASE 1: Fade out main bar content WHILE expanding width (simultaneous)
       tl.to(mainBarRef.current, {
         opacity: 0,
-        duration: 0.2,
+        duration: 0.4,
         ease: 'power2.in',
       });
-
-      // Step 2: WIDTH EXPAND (no height change yet)
+      // Width expansion happens at the same time as fade out
       tl.to(containerRef.current, {
         width: 'calc(100vw - 40px)',
-        duration: 0.6,
-        ease: 'power3.out',
-      });
-
-      // Step 3: HEIGHT EXPAND (set height to target value)
-      // First collapse mainBar height, then expand footer content
-      tl.set(mainBarRef.current, { height: 0 });
-      tl.set(footerContentRef.current, { opacity: 1 });
-      tl.to(footerContentRef.current, {
-        height: 'auto',
         duration: 0.5,
         ease: 'power3.out',
+      }, '<'); // '<' means start at same time as previous animation
+
+      // PHASE 2: After width is complete, expand height and fade in content
+      // First collapse mainBar height to make room
+      tl.set(mainBarRef.current, { height: 0 });
+
+      // Set footer content ready but invisible
+      tl.set(footerContentRef.current, { opacity: 1, height: 0 });
+
+      // Expand footer content height
+      tl.to(footerContentRef.current, {
+        height: 'auto',
+        duration: 0.4,
+        ease: 'power3.out',
       });
 
-      // Step 4: AFTER height is done, reveal text content (Copy.jsx style)
+      // Reveal text content with stagger (after height expansion)
       tl.add(() => {
         if (footerContentRef.current) {
           const texts = footerContentRef.current.querySelectorAll('.footer-text');
           gsap.to(texts, {
             y: '0%',
-            duration: 0.6,
-            stagger: 0.08,
+            duration: 0.5,
+            stagger: 0.06,
             ease: 'power3.out',
           });
         }
       });
 
-      // Step 5: Show footer bottom bar
+      // Show footer bottom bar (slightly overlapping with text reveal)
       tl.to(footerBottomRef.current, {
         height: 'auto',
         opacity: 1,
-        duration: 0.4,
+        duration: 0.35,
         ease: 'power3.out',
-      }, '-=0.3');
+      }, '-=0.25');
 
     } else {
-      // Collapse animation - reverse order
+      // Collapse animation - reverse order, also smooth
 
-      // 1. Hide bottom bar
+      // 1. First fade out and collapse footer content
       tl.to(footerBottomRef.current, {
         height: 0,
         opacity: 0,
-        duration: 0.3,
+        duration: 0.25,
         ease: 'power3.in',
       });
 
-      // 2. HEIGHT COLLAPSE (both footer content and bottom bar together)
-      tl.to([footerContentRef.current, footerBottomRef.current], {
+      tl.to(footerContentRef.current, {
         height: 0,
         opacity: 0,
-        duration: 0.4,
-        ease: 'power3.in',
-      }, '-=0.2');
-
-      // 3. Restore main bar
-      tl.set(mainBarRef.current, { height: 'auto' });
-      tl.to(mainBarRef.current, {
-        opacity: 1,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: 'power3.in',
+      }, '-=0.15');
+
+      // Reset footer text positions for next expansion
+      tl.add(() => {
+        if (footerContentRef.current) {
+          const texts = footerContentRef.current.querySelectorAll('.footer-text');
+          gsap.set(texts, { y: '110%' });
+        }
       });
 
-      // 4. WIDTH COLLAPSE - use responsive width based on screen size
-      let collapsedWidth = 'calc(100vw - 40px)'; // mobile default
-      if (window.innerWidth >= 1024) {
-        collapsedWidth = '38vw'; // lg+
-      } else if (window.innerWidth >= 768) {
-        collapsedWidth = '80vw'; // md
-      }
+      // 2. After content is hidden, restore main bar and collapse width (simultaneous)
+      tl.set(mainBarRef.current, { height: 'auto' });
+
+      // Collapse width while fading in main bar content
+      const responsiveWidths = {
+        mobile: 'calc(100vw - 40px)',
+        tablet: '80vw',
+        desktop: '38vw'
+      };
       tl.to(containerRef.current, {
-        width: collapsedWidth,
-        duration: 0.5,
+        width: responsiveWidths[breakpoint],
+        duration: 0.4,
         ease: 'power3.inOut',
-      }, '-=0.2');
+      });
+      tl.to(mainBarRef.current, {
+        opacity: 1,
+        duration: 0.35,
+        ease: 'power2.out',
+      }, '<0.1'); // Start slightly after width collapse begins
     }
-  }, { dependencies: [isFooterMode] });
+  }, { dependencies: [isFooterMode, breakpoint] });
 
   // Menu expand/collapse animation with staggered items (for hamburger menu)
   useGSAP(() => {
@@ -269,7 +321,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
           <div className="flex items-center justify-between px-6 py-4">
             {/* Copyright */}
             <span className="text-[12px] md:text-[14px] text-background/50 font-medium">
-              © {new Date().getFullYear()} All Rights Reserved
+              {new Date().getFullYear()}
             </span>
 
             {/* Social Links */}

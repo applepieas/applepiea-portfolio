@@ -184,7 +184,7 @@ export default function Stack() {
   }, [activeIndex]);
 
   return (
-    <section ref={sectionRef} className="py-20 w-full mb-[40vh]">
+    <section ref={sectionRef} className="md:py-20 pt-16 pb-0 w-full mb-[40vh]">
 
       {/* --- Section Header --- */}
       <div className="text-center mb-16 px-10 pb-32">

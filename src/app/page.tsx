@@ -23,7 +23,6 @@ export default function Home() {
       <Projects />
       <Services />
       <Stack />
-      <Footer />
       <BottomNav isLoaded={isLoaded} />
     </main>
   );
