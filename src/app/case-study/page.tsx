@@ -8,7 +8,7 @@ export default function CaseStudy() {
   const textDelay = 0.3;
 
   return (
-    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
+    <main className="min-h-screen bg-(--color-background) text-(--color-foreground)">
 
       {/* ============================================
           Header - Fixed at top
@@ -21,7 +21,7 @@ export default function CaseStudy() {
           - Responsive padding and gaps using clamp()
           ============================================ */}
       <div
-        className="flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-6 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] mx-4 lg:mx-6 mt-24"
+        className="flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-6 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] mx-4 lg:mx-6 mt-20 lg:mt-60"
         style={{ backgroundColor: 'var(--color-foreground)' }}
       >
 
@@ -151,8 +151,10 @@ export default function CaseStudy() {
                 alt="Jazmin Wong"
                 fill
                 className="object-cover"
-                sizes="100vw"
-                src="/image.png"
+                quality={100}
+                priority
+                sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), calc(100vw - 64px)"
+                src="/mobile-showcase.jpg"
               />
             </div>
 
@@ -197,20 +199,10 @@ export default function CaseStudy() {
                 fill
                 className="object-cover"
                 sizes="100vw"
-                src="/image.png"
+                src="/desktop-showcase.jpg"
               />
             </div>
 
-            {/* Full width image 3 */}
-            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
-              <Image
-                alt="Jazmin Wong"
-                fill
-                className="object-cover"
-                sizes="100vw"
-                src="/image.png"
-              />
-            </div>
           </div>
         </div>
       </div>
