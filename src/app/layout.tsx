@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/providers/LenisProvider";
 import GSAPProvider from "@/components/providers/GSAPProvider";
+import TransitionProvider from "@/components/providers/TransitionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,9 @@ export default function RootLayout({
       >
         <LenisProvider>
           <GSAPProvider>
-            {children}
+            <TransitionProvider>
+              {children}
+            </TransitionProvider>
           </GSAPProvider>
         </LenisProvider>
       </body>

@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import TransitionLink from '@/components/ui/TransitionLink';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -57,13 +57,13 @@ export default function ProjectCard({
   });
 
   return (
-    <Link
+    <TransitionLink
       href="/case-study"
       className="w-full bg-foreground rounded-[20px] p-4 flex flex-col overflow-hidden">
       {/* Image Container */}
       <div
         ref={imageContainerRef}
-        className="relative rounded-lg lg:rounded-xl overflow-hidden w-full h-[260px] md:h-[350px] lg:h-[clamp(500px,32vw,800px)]"
+        className="relative rounded-lg lg:rounded-xl overflow-hidden w-full h-65 md:h-87.5 lg:h-[clamp(500px,32vw,800px)]"
       >
         <Image
           src={image}
@@ -77,7 +77,7 @@ export default function ProjectCard({
       <div className="flex justify-between items-center py-4 px-2">
         {/* Left: Author */}
         <div className="flex items-center gap-3">
-          <div className="w-[clamp(32px,2.5vw,40px)] h-[clamp(32px,2.5vw,40px)] rounded-full overflow-hidden bg-secondary flex-shrink-0">
+          <div className="w-[clamp(32px,2.5vw,40px)] h-[clamp(32px,2.5vw,40px)] rounded-full overflow-hidden bg-secondary shrink-0">
             <Image
               src={authorIcon}
               alt={authorName}
@@ -104,17 +104,17 @@ export default function ProjectCard({
 
       {/* Marquee Section */}
       <div className="relative overflow-hidden whitespace-nowrap pt-1">
-        <div className="absolute -left-1 -top-1 -bottom-1 w-14 bg-gradient-to-r from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
-        <div className="absolute -right-1 -top-1 -bottom-1 w-14 bg-gradient-to-l from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute -left-1 -top-1 -bottom-1 w-14 bg-linear-to-r from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute -right-1 -top-1 -bottom-1 w-14 bg-linear-to-l from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
         <div className="animate-marquee-slow inline-flex">
-          <span className="text-bg-secondary text-[clamp(16px,1.2vw,20px)] font-400 uppercase tracking-wider">
+          <span className="text-bg-secondary text-[clamp(16px,1.2vw,20px)] font-normal uppercase tracking-wider">
             {marqueeText}{marqueeText}{marqueeText}{marqueeText}
           </span>
-          <span className="text-bg-secondary text-[clamp(16px,1.2vw,20px)] font-400 uppercase tracking-wider">
+          <span className="text-bg-secondary text-[clamp(16px,1.2vw,20px)] font-normal uppercase tracking-wider">
             {marqueeText}{marqueeText}{marqueeText}{marqueeText}
           </span>
         </div>
       </div>
-    </Link>
+    </TransitionLink>
   );
 }

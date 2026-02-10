@@ -1,29 +1,51 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import Header from "@/components/layout/Header";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Stack from "@/components/sections/Stack";
 import Services from "@/components/sections/Services";
-import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import Preloader from "@/components/ui/Preloader";
 import Projects from "@/components/sections/Projects";
 
 export default function Home() {
+  const hasSeenPreloader = useSyncExternalStore(
+    () => () => { },
+    () => (typeof window === 'undefined'
+      ? false
+      : sessionStorage.getItem('preloaderSeen') === 'true'),
+    () => false
+  );
   const [isLoaded, setIsLoaded] = useState(false);
+  const isReady = isLoaded || hasSeenPreloader;
+  const showPreloader = !isReady;
+
+  useEffect(() => {
+    const handlePageHide = () => {
+      sessionStorage.removeItem('preloaderSeen');
+    };
+
+    window.addEventListener('pagehide', handlePageHide);
+    return () => window.removeEventListener('pagehide', handlePageHide);
+  }, []);
+
+  const handlePreloaderComplete = () => {
+    sessionStorage.setItem('preloaderSeen', 'true');
+    setIsLoaded(true);
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <Preloader onComplete={() => setIsLoaded(true)} />
-      <Header isLoaded={isLoaded} />
-      <Hero isLoaded={isLoaded} />
+      {showPreloader && <Preloader onComplete={handlePreloaderComplete} />}
+      <Header isLoaded={isReady} />
+      <Hero isLoaded={isReady} />
       <About />
       <Projects />
       <Services />
       <Stack />
-      <BottomNav isLoaded={isLoaded} />
+      <BottomNav isLoaded={isReady} />
     </main>
   );
 }

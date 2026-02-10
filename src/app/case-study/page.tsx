@@ -3,9 +3,11 @@
 import Header from "@/components/layout/Header";
 import Copy from "@/components/ui/Copy";
 import Image from "next/image";
+import { usePageTransition } from "@/components/providers/TransitionProvider";
 
 export default function CaseStudy() {
-  const textDelay = 0.3;
+  const textDelay = 0.1;
+  const { isContentReady } = usePageTransition();
 
   return (
     <main className="min-h-screen bg-(--color-background) text-(--color-foreground)">
@@ -30,7 +32,7 @@ export default function CaseStudy() {
             - Massive centered project title
             ============================================ */}
         <div className="overflow-hidden">
-          <Copy delay={textDelay}>
+          <Copy delay={textDelay} isReady={isContentReady}>
             <h1
               className="w-full text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
               style={{ color: 'var(--color-background)' }}
@@ -59,7 +61,7 @@ export default function CaseStudy() {
             {/* Column 1: Year */}
             <div className="flex flex-col gap-3 col-span-2">
               <div className="overflow-hidden">
-                <Copy delay={textDelay}>
+                <Copy delay={textDelay} isReady={isContentReady}>
                   <p
                     className="text-xs lg:text-[clamp(14px,0.8vw,18px)] uppercase font-medium tracking-wider"
                     style={{ color: 'var(--color-muted)' }}
@@ -69,7 +71,7 @@ export default function CaseStudy() {
                 </Copy>
               </div>
               <div className="overflow-hidden">
-                <Copy delay={textDelay}>
+                <Copy delay={textDelay} isReady={isContentReady}>
                   <p
                     className="text-[clamp(48px,3.5vw,96px)] font-semibold tracking-tight leading-[0.8]"
                     style={{ color: 'var(--color-background)' }}
@@ -83,7 +85,7 @@ export default function CaseStudy() {
             {/* Column 2: Services Tags */}
             <div className="flex flex-col gap-3 col-span-4">
               <div className="overflow-hidden">
-                <Copy delay={textDelay}>
+                <Copy delay={textDelay} isReady={isContentReady}>
                   <p
                     className="text-xs lg:text-[clamp(14px,0.8vw,18px)] uppercase font-medium tracking-wider"
                     style={{ color: 'var(--color-muted)' }}
@@ -92,7 +94,7 @@ export default function CaseStudy() {
                   </p>
                 </Copy>
               </div>
-              <Copy delay={textDelay}>
+              <Copy delay={textDelay} isReady={isContentReady}>
                 <div className="flex flex-wrap">
                   {['Art Direction', 'Voice & Tone', 'UI', 'UX', 'Next.js', 'Tailwind CSS', 'GSAP', 'Motion', 'Matter.js', 'Lenis', 'Vercel'].map((service, index) => (
                     <span
@@ -116,7 +118,7 @@ export default function CaseStudy() {
             {/* Column 3: Summary */}
             <div className="flex flex-col gap-3 col-span-5">
               <div className="overflow-hidden">
-                <Copy delay={textDelay}>
+                <Copy delay={textDelay} isReady={isContentReady}>
                   <p
                     className="text-xs lg:text-[clamp(14px,0.8vw,18px)] uppercase font-medium tracking-wider"
                     style={{ color: 'var(--color-muted)' }}
@@ -126,7 +128,7 @@ export default function CaseStudy() {
                 </Copy>
               </div>
               <div className="overflow-hidden">
-                <Copy delay={textDelay}>
+                <Copy delay={textDelay} isReady={isContentReady}>
                   <p
                     className="text-[clamp(16px,1.3vw,30px)] font-medium leading-[1.3]"
                     style={{ color: 'var(--color-background)' }}
