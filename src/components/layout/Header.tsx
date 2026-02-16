@@ -1,14 +1,29 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Copy from '../ui/Copy';
 import SlidingButton from '../ui/SlidingButton';
+
+const formatTime = () =>
+  new Date().toLocaleTimeString('en-US', {
+    timeZone: 'Europe/Prague',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
 
 interface HeaderProps {
   isLoaded?: boolean;
 }
 
 export default function Header({ isLoaded = false }: HeaderProps) {
+  const [time, setTime] = useState<string | null>(null);
 
+  useEffect(() => {
+    setTime(formatTime());
+    const id = setInterval(() => setTime(formatTime()), 30_000);
+    return () => clearInterval(id);
+  }, []);
 
   const textDelay = 0.8;
 
@@ -43,7 +58,7 @@ export default function Header({ isLoaded = false }: HeaderProps) {
             <span className="font-semibold text-foreground">Local time</span>
           </Copy>
           <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
-            <span className="font-medium text-muted">{new Date().toLocaleTimeString('en-US', { timeZone: 'Europe/Prague', hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+            <span className="font-medium text-muted">{time ?? '\u00A0'}</span>
           </Copy>
         </div>
 

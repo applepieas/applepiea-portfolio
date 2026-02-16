@@ -17,6 +17,7 @@ interface ProjectCardProps {
   year: string;
   image: string;
   tags: string[];
+  href: string;
 }
 
 export default function ProjectCard({
@@ -27,6 +28,7 @@ export default function ProjectCard({
   year,
   image,
   tags,
+  href,
 }: ProjectCardProps) {
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +60,7 @@ export default function ProjectCard({
 
   return (
     <TransitionLink
-      href="/case-study"
+      href={href}
       className="w-full bg-foreground rounded-[20px] p-4 flex flex-col overflow-hidden">
       {/* Image Container */}
       <div

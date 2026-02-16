@@ -3,9 +3,10 @@
 import Header from "@/components/layout/Header";
 import Copy from "@/components/ui/Copy";
 import Image from "next/image";
+import VideoCarousel from "@/components/ui/VideoCarousel";
 import { usePageTransition } from "@/components/providers/TransitionProvider";
 
-export default function CaseStudy() {
+export default function LandingPagesCaseStudy() {
   const textDelay = 0.1;
   const { isContentReady } = usePageTransition();
 
@@ -37,7 +38,7 @@ export default function CaseStudy() {
               className="w-full text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
               style={{ color: 'var(--color-background)' }}
             >
-              Jazmin Wong
+              Landing pages
             </h1>
           </Copy>
         </div>
@@ -96,7 +97,7 @@ export default function CaseStudy() {
               </div>
               <Copy delay={textDelay} isReady={isContentReady}>
                 <div className="flex flex-wrap">
-                  {['Art Direction', 'Voice & Tone', 'UI', 'UX', 'Next.js', 'Tailwind CSS', 'GSAP', 'Motion', 'Matter.js', 'Lenis', 'Vercel'].map((service, index) => (
+                  {['UI', 'UX', 'Web Design', 'Motion Design', 'Figma', 'HTML', 'CSS'].map((service, index) => (
                     <span
                       key={index}
                       className="inline-block mr-1.5 2xl:mr-2 mb-1.5 2xl:mb-2 text-[10px] lg:text-[clamp(12px,0.7vw,16px)] uppercase tracking-[1.1] px-2 xl:px-3 pt-2 pb-1.5 rounded-md whitespace-nowrap"
@@ -133,7 +134,7 @@ export default function CaseStudy() {
                     className="text-[clamp(16px,1.3vw,30px)] font-medium leading-[1.3]"
                     style={{ color: 'var(--color-background)' }}
                   >
-                    Designed and developed a personal website for Jazmin Wong, a creative content strategist. The project emphasized a bold, engaging layout with playful micro-interactions to reflect her dynamic approach to content creation.
+                    Self-initiated landing page designs I created to build my UI design skills. These aren&apos;t real client projects, but they showcase my approach to layout, typography, and visual design.
                   </p>
                 </Copy>
               </div>
@@ -150,7 +151,7 @@ export default function CaseStudy() {
             {/* Full width image 1 */}
             <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
               <Image
-                alt="Jazmin Wong"
+                alt="Landing page showcase mobile"
                 fill
                 className="object-cover"
                 quality={100}
@@ -160,44 +161,19 @@ export default function CaseStudy() {
               />
             </div>
 
-            {/* Video placeholder (using image for now) */}
-            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
-              <Image
-                alt="Jazmin Wong video"
-                fill
-                className="object-cover"
-                sizes="100vw"
-                src="/image.png"
-              />
-            </div>
-
-            {/* Split layout: 2 images side by side */}
-            <div className="flex gap-4 lg:gap-5">
-              <div className="w-1/2 h-[40vw] rounded-lg lg:rounded-xl overflow-hidden relative">
-                <Image
-                  alt="Jazmin Wong"
-                  fill
-                  className="object-cover"
-                  sizes="50vw"
-                  src="/image.png"
-                />
-              </div>
-
-              <div className="w-1/2 h-[40vw] rounded-lg lg:rounded-xl overflow-hidden relative">
-                <Image
-                  alt="Jazmin Wong"
-                  fill
-                  className="object-cover"
-                  sizes="50vw"
-                  src="/image.png"
-                />
-              </div>
-            </div>
+            {/* Video carousel */}
+            <VideoCarousel
+              className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden"
+              videos={[
+                'https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto/v1771232449/oravia-vid_fvpxwt.mp4',
+                'https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto/v1771232459/loom-vid_n2fjcn.mp4',
+              ]}
+            />
 
             {/* Full width image 2 */}
             <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
               <Image
-                alt="Jazmin Wong"
+                alt="Landing page showcase desktop"
                 fill
                 className="object-cover"
                 sizes="100vw"

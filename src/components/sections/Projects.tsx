@@ -11,22 +11,23 @@ gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
-    title: "Sidecar Portfolio",
+    title: "Landing Pages",
     authorName: "Pavel Rosenberg",
-    category: "Portfolio",
+    category: "Design",
     year: "2025",
-    image: "/image.png",
-    tags: ["NEXT.JS", "TAILWIND CSS", "GSAP", "FRAMER MOTION", "REACT", "TYPESCRIPT"],
+    image: "/desktop-showcase.jpg",
+    tags: ["UI", "UX", "WEB DESIGN", "MOTION DESIGN", "FIGMA", "HTML", "CSS"],
+    href: "/case-study/landing-pages",
   },
   {
-    title: "E-commerce Platform",
+    title: "Backend Integration",
     authorName: "Pavel Rosenberg",
     category: "Product",
     year: "2024",
     image: "/image.png",
     tags: ["UI/UX", "DESIGN SYSTEM", "FIGMA", "PROTOTYPING", "ART DIRECTION"],
+    href: "/case-study/backend-integration",
   },
-
 ];
 
 export default function Projects() {
@@ -81,6 +82,7 @@ export default function Projects() {
               year={project.year}
               image={project.image}
               tags={project.tags}
+              href={project.href}
             />
           </div>
         ))}
