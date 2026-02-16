@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Copy from "@/components/ui/Copy";
 import Image from "next/image";
 import ArchitectureDiagram from "@/components/ui/ArchitectureDiagram";
+import { CodeSummary, CodeSnippet } from "@/components/ui/CodeShowcase";
 import { usePageTransition } from "@/components/providers/TransitionProvider";
 
 export default function BackendIntegrationCaseStudy() {
@@ -144,12 +145,17 @@ export default function BackendIntegrationCaseStudy() {
 
           {/* ============================================
               Image Gallery
-              - Placeholder images for now
               ============================================ */}
           <div className="flex flex-col gap-4 lg:gap-5">
 
             {/* Interactive architecture diagram */}
             <ArchitectureDiagram className="w-full h-[57vw] rounded-lg lg:rounded-xl" />
+
+            {/* Code showcase — two square cards side by side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
+              <CodeSummary className="aspect-square" />
+              <CodeSnippet className="aspect-square" />
+            </div>
 
             {/* Full width image 2 */}
             <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">

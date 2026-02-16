@@ -473,26 +473,21 @@ export default function ArchitectureDiagram({ className }: { className?: string 
         backgroundSize: '50px 50px',
       }} />
 
-      {/* Controls – stopPropagation prevents drag from starting on button clicks */}
+      {/* Controls – vertical strip, centered on right edge */}
       <div
         onPointerDown={(e) => e.stopPropagation()}
         style={{
-          position: 'absolute', top: 16, right: 16, zIndex: 10, display: 'flex', flexDirection: 'column', gap: 6,
-        }}
-      >
-        {/* Zoom row */}
-        <div style={{
-          display: 'flex', gap: 6,
+          position: 'absolute', top: '50%', right: 16, transform: 'translateY(-50%)',
+          zIndex: 10, display: 'flex', flexDirection: 'column', gap: 6,
           background: t.controlBg, backdropFilter: 'blur(10px)',
           padding: 6, borderRadius: 12, border: `1px solid ${t.controlBorder}`,
-        }}>
-          <button onClick={() => applyZoom(-0.15)} style={{ ...btnBase, background: t.controlBtn, color: t.controlIcon }}>−</button>
-          <span style={{ padding: '0 10px', display: 'flex', alignItems: 'center', color: t.controlText, fontSize: 13, fontWeight: 500 }}>
-            {Math.round(scale * 100)}%
-          </span>
-          <button onClick={() => applyZoom(0.15)} style={{ ...btnBase, background: t.controlBtn, color: t.controlIcon }}>+</button>
-          <button onClick={reset} style={{ ...btnBase, background: t.controlBtn, color: t.controlIcon }}>⟲</button>
-        </div>
+        }}
+      >
+        <button onClick={() => applyZoom(0.15)} style={{ ...btnBase, background: t.controlBtn, color: t.controlIcon }}>+</button>
+        <span style={{ padding: '6px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.controlText, fontSize: 11, fontWeight: 500 }}>
+          {Math.round(scale * 100)}%
+        </span>
+        <button onClick={() => applyZoom(-0.15)} style={{ ...btnBase, background: t.controlBtn, color: t.controlIcon }}>−</button>
       </div>
 
       {/* SVG connections */}
