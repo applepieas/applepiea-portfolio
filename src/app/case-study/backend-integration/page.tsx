@@ -5,6 +5,7 @@ import Copy from "@/components/ui/Copy";
 import Image from "next/image";
 import ArchitectureDiagram from "@/components/ui/ArchitectureDiagram";
 import { CodeSummary, CodeSnippet } from "@/components/ui/CodeShowcase";
+import ProjectStats from "@/components/portfolio/ProjectStats";
 import { usePageTransition } from "@/components/providers/TransitionProvider";
 
 export default function BackendIntegrationCaseStudy() {
@@ -157,15 +158,62 @@ export default function BackendIntegrationCaseStudy() {
               <CodeSnippet className="aspect-square" />
             </div>
 
+            {/* Project stats showcase */}
+            <ProjectStats />
+
             {/* Full width image 2 */}
             <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
               <Image
                 alt="Backend integration showcase"
                 fill
+                className="object-cover object-left"
+                sizes="100vw"
+                src="/card-showcase.jpg"
+              />
+            </div>
+
+            {/* Product listing mockup — full width */}
+            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
+              <Image
+                alt="Product listing page mockup"
+                fill
                 className="object-cover"
                 sizes="100vw"
-                src="/image.png"
+                src="/Mockup-products.jpg"
               />
+            </div>
+
+            {/* Product details mockup — full width */}
+            <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">
+              <Image
+                alt="Product details page mockup"
+                fill
+                className="object-cover"
+                sizes="100vw"
+                src="/Mockup-product-details.jpg"
+              />
+            </div>
+
+            {/* Mobile mockups — two-column grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
+              <div className="w-full aspect-9/16 rounded-lg lg:rounded-xl overflow-hidden relative">
+                <Image
+                  alt="Product listing mobile mockup"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  src="/Mockup-products-mobile.jpg"
+                />
+              </div>
+              <div className="w-full aspect-9/16 rounded-lg lg:rounded-xl overflow-hidden relative">
+                <Image
+                  alt="Product details mobile mockup"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  src="/Mockup-product-details-mobile.jpg"
+                />
+              </div>
             </div>
 
           </div>
