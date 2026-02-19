@@ -79,7 +79,7 @@ export default function BackendIntegrationCaseStudy() {
                     className="text-[clamp(48px,3.5vw,96px)] font-semibold tracking-tight leading-[0.8]"
                     style={{ color: 'var(--color-background)' }}
                   >
-                    2024
+                    2025
                   </p>
                 </Copy>
               </div>
@@ -99,7 +99,7 @@ export default function BackendIntegrationCaseStudy() {
               </div>
               <Copy delay={textDelay} isReady={isContentReady}>
                 <div className="flex flex-wrap">
-                  {['Next.js', 'PostgreSQL', 'Drizzle ORM', 'Auth', 'REST API', 'TypeScript'].map((service, index) => (
+                  {['Next.js', 'PostgreSQL', 'Drizzle ORM', 'Audit Logging', 'Type-safe APIs', 'TypeScript'].map((service, index) => (
                     <span
                       key={index}
                       className="inline-block mr-1.5 2xl:mr-2 mb-1.5 2xl:mb-2 text-[10px] lg:text-[clamp(12px,0.7vw,16px)] uppercase tracking-[1.1] px-2 xl:px-3 pt-2 pb-1.5 rounded-md whitespace-nowrap"
@@ -136,7 +136,7 @@ export default function BackendIntegrationCaseStudy() {
                     className="text-[clamp(16px,1.3vw,30px)] font-medium leading-[1.3]"
                     style={{ color: 'var(--color-background)' }}
                   >
-                    Full-stack backend architecture powering an e-commerce platform — auth, sessions, decision traceability, and audit logging built on PostgreSQL with Drizzle ORM.
+                    Backend infrastructure for an e-commerce platform — handling authentication, sessions, and complete audit trails for security and compliance. Built with PostgreSQL and Drizzle ORM.
                   </p>
                 </Copy>
               </div>

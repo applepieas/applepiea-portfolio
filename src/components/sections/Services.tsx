@@ -13,20 +13,20 @@ const services = [
   {
     number: "01",
     title: "Design",
-    description: "I design high-fidelity interfaces and design systems. I focus on aesthetics that reflect the brand's identity while ensuring a seamless user experience.",
+    description: "I design clean interfaces and build reusable component systems in Figma. Focus on layouts that look intentional, animations that feel smooth, and details that make the experience feel premium.",
     tags: ["UI/UX DESIGN", "DESIGN SYSTEMS", "PROTOTYPING", "FIGMA"]
   },
   {
     number: "02",
     title: "Development",
-    description: "Evolving with every brief and built for impact, my process spans design, development, and brand strategy.",
-    tags: ["REACT", "NEXT.JS", "GSAP", "TYPESCRIPT", "TAILWIND CSS", "FRAMER MOTION"]
+    description: "I build full-stack web apps — everything from animated landing pages to complete platforms with databases. Clean code, smooth interactions, and backends that actually scale.",
+    tags: ["REACT", "NEXT.JS", "TYPESCRIPT", "POSTGRESQL", "TAILWIND CSS", "FRAMER MOTION", "WEBFLOW"]
   },
   {
     number: "03",
-    title: "Strategy",
-    description: "Evolving with every brief and built for impact, my process spans design, development, and brand strategy.",
-    tags: ["RESEARCH & INSIGHTS", "BRAND STRATEGY", "COMPETITIVE STUDY", "VOICE & TONE"]
+    title: "Integration",
+    description: "I connect design and code seamlessly. From prototypes to production, optimizing performance, building API architecture, and making sure everything works together perfectly.",
+    tags: ["FULL-STACK INTEGRATION", "PERFORMANCE OPTIMIZATION", "API ARCHITECTURE", "DESIGN-TO-CODE"]
   }
 ];
 
@@ -91,7 +91,7 @@ export default function Services() {
             </Copy>
             <Copy animateOnScroll={true} delay={0.1}>
               <h2 className="text-[clamp(24px,3.3vw,56px)] font-medium leading-tight">
-                Building things that work and look good. From the first sketch to the final deploy, I combine design and full-stack development to turn complex ideas into sharp, high-impact digital reality
+                Building things that work and look good. From the first design to the final deploy, I handle both the pixels and the code to turn ideas into polished digital products.
               </h2>
             </Copy>
           </div>

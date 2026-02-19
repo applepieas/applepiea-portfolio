@@ -30,11 +30,7 @@ body {
   margin: 0;
 } */
 
-@media (min-width: 1790px) {
-  .hero-title {
-    font-size: 13rem;
-  }
-}
+
 
 
 /* SplitText character styling - must be inline-block to prevent line breaks */

@@ -303,7 +303,7 @@ export function CodeSummary({ className = '' }: { className?: string }) {
           {slide.heading}
         </h3>
         <p
-          className="text-[clamp(14px,1vw,20px)] font-medium leading-[1.4]"
+          className="text-[clamp(16px,1.3vw,30px)] font-medium leading-[1.4]"
           style={{ color: 'var(--color-background)' }}
         >
           {slide.summary}

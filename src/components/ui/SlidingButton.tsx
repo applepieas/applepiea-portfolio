@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -17,12 +17,14 @@ interface SlidingButtonProps {
 export default function SlidingButton({
   defaultText = 'Get in touch',
   hoverText = 'Say Ahoj! 👋',
-  href,
+  href = "mailto:vapel.rosenberg@gmail.com?subject=Let's work together",
   className = '',
   onClick,
   isLoaded = true,
 }: SlidingButtonProps) {
   const buttonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const lineHeight = 28; // Match text-[1.25rem] = 20px with some breathing room
 
   // Initial slide-up animation
@@ -36,6 +38,17 @@ export default function SlidingButton({
     );
   }, { dependencies: [isLoaded] });
 
+  const handleCopy = (e: React.MouseEvent) => {
+    if (href?.startsWith('mailto:')) {
+      // Don't prevent default, allow mailto to open
+      const email = href.replace('mailto:', '').split('?')[0];
+      navigator.clipboard.writeText(email);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+    onClick?.();
+  };
+
   const buttonContent = (
     <div
       className="relative overflow-hidden"
@@ -43,9 +56,11 @@ export default function SlidingButton({
     >
       <motion.div
         className="flex flex-col"
+        animate={isCopied ? "copied" : isHovered ? "hover" : "default"}
         variants={{
           default: { y: 0 },
           hover: { y: -lineHeight },
+          copied: { y: -lineHeight * 2 },
         }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       >
@@ -63,6 +78,13 @@ export default function SlidingButton({
         >
           {hoverText}
         </span>
+        {/* Line 3: Copied text */}
+        <span
+          className="block text-center whitespace-nowrap"
+          style={{ height: lineHeight, lineHeight: `${lineHeight}px` }}
+        >
+          Email copied! ✈️
+        </span>
       </motion.div>
     </div>
   );
@@ -77,31 +99,33 @@ export default function SlidingButton({
     ${className}
   `.trim();
 
+  const commonProps = {
+    className: baseClasses,
+    onMouseEnter: () => setIsHovered(true),
+    onMouseLeave: () => setIsHovered(false),
+    style: { opacity: 0, visibility: isLoaded ? 'visible' : 'hidden' } as React.CSSProperties,
+  };
+
   if (href) {
     return (
-      <motion.a
+      <a
         ref={buttonRef as React.RefObject<HTMLAnchorElement>}
+        {...commonProps}
         href={href}
-        className={baseClasses}
-        initial="default"
-        whileHover="hover"
-        style={{ opacity: 0, visibility: isLoaded ? 'visible' : 'hidden' }}
+        onClick={handleCopy}
       >
         {buttonContent}
-      </motion.a>
+      </a>
     );
   }
 
   return (
-    <motion.button
+    <button
       ref={buttonRef as React.RefObject<HTMLButtonElement>}
+      {...commonProps}
       onClick={onClick}
-      className={baseClasses}
-      initial="default"
-      whileHover="hover"
-      style={{ opacity: 0, visibility: isLoaded ? 'visible' : 'hidden' }}
     >
       {buttonContent}
-    </motion.button>
+    </button>
   );
 }

@@ -88,7 +88,7 @@ export default function Stack() {
 
     // Define stagger order - some chars flip at the same time
     // This creates a interesting pattern across the text
-    const staggerOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4, 9, 13, 10, 15, 11, 16, 12, 14];
+    const staggerOrder = [0, 5, 1, 6, 15, 2, 7, 11, 3, 8, 4, 9, 13, 10, 16, 12, 14];
 
     wrappers.forEach((wrapper, i) => {
       const original = wrapper.querySelector(".flip-char") as HTMLElement;

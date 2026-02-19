@@ -57,7 +57,7 @@ export default function Header({ isLoaded = false }: HeaderProps) {
           <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-semibold text-foreground">Local time</span>
           </Copy>
-          <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
+          <Copy key={time ? 'loaded' : 'loading'} animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <span className="font-medium text-muted">{time ?? '\u00A0'}</span>
           </Copy>
         </div>

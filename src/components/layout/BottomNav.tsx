@@ -15,7 +15,7 @@ interface BottomNavProps {
 
 const navLinks = [
   { name: 'Home', href: '#' },
-  { name: 'Projects', href: '/case-study' },
+  { name: 'Projects', href: '#projects' },
   { name: 'About', href: '#about' },
 ];
 

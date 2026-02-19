@@ -16,7 +16,7 @@ const projects = [
     category: "Design",
     year: "2025",
     image: "/desktop-showcase.jpg",
-    tags: ["UI", "UX", "WEB DESIGN", "MOTION DESIGN", "FIGMA", "HTML", "CSS"],
+    tags: ["UI", "UX", "Web Design", "Motion Design", "Figma", "HTML", "CSS"],
     href: "/case-study/landing-pages",
   },
   {
@@ -24,8 +24,8 @@ const projects = [
     authorName: "Pavel Rosenberg",
     category: "Product",
     year: "2024",
-    image: "/image.png",
-    tags: ["UI/UX", "DESIGN SYSTEM", "FIGMA", "PROTOTYPING", "ART DIRECTION"],
+    image: "/card-showcase.jpg",
+    tags: ["Next.js", "PostgreSQL", "Drizzle ORM", "Audit Logging", "Type-safe APIs", "TypeScript"],
     href: "/case-study/backend-integration",
   },
 ];
@@ -56,7 +56,7 @@ export default function Projects() {
   });
 
   return (
-    <section className="w-full px-3 lg:px-6 pt-32">
+    <section id="projects" className="w-full px-3 lg:px-6 pt-32">
       {/* Header section */}
       <div className="mb-4 flex justify-between items-end text-[12vw] font-bold leading-none tracking-tighter uppercase">
         <Copy animateOnScroll={true} delay={0}>

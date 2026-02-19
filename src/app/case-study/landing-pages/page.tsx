@@ -134,7 +134,7 @@ export default function LandingPagesCaseStudy() {
                     className="text-[clamp(16px,1.3vw,30px)] font-medium leading-[1.3]"
                     style={{ color: 'var(--color-background)' }}
                   >
-                    Self-initiated landing page designs I created to build my UI design skills. These aren&apos;t real client projects, but they showcase my approach to layout, typography, and visual design.
+                    A collection of landing page designs showcasing my approach to composition, type hierarchy, and brand expression.
                   </p>
                 </Copy>
               </div>
