@@ -16,6 +16,7 @@ interface ProjectCardProps {
   category: string;
   year: string;
   image: string;
+  video?: string;
   tags: string[];
   href: string;
 }
@@ -27,23 +28,28 @@ export default function ProjectCard({
   category,
   year,
   image,
+  video,
   tags,
   href,
 }: ProjectCardProps) {
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const videoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Create marquee text by joining tags
   const marqueeText = tags.join(', ') + ', ';
+
+  const { contextSafe } = useGSAP({ scope: imageContainerRef });
 
   // Parallax scroll effect on the image
   useGSAP(() => {
     if (!imageContainerRef.current) return;
 
-    const img = imageContainerRef.current.querySelector('img');
-    if (!img) return;
+    if (!imageRef.current) return;
 
     gsap.fromTo(
-      img,
+      imageRef.current,
       { yPercent: -10 },
       {
         yPercent: 10,
@@ -58,6 +64,68 @@ export default function ProjectCard({
     );
   });
 
+  const handleMouseEnter = () => {
+    contextSafe(() => {
+      // Only animate video on desktop
+      const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+      if (!isDesktop) return;
+
+      if (videoTimeoutRef.current) {
+        clearTimeout(videoTimeoutRef.current);
+        videoTimeoutRef.current = null;
+      }
+
+      if (imageRef.current) {
+        gsap.killTweensOf(imageRef.current);
+        gsap.to(imageRef.current, { scale: 0.99, filter: "blur(10px)", duration: 0.6, ease: "power3.out", overwrite: true });
+      }
+      if (videoContainerRef.current) {
+        gsap.killTweensOf(videoContainerRef.current);
+        gsap.fromTo(videoContainerRef.current,
+          { clipPath: "inset(100% 0% 0% 0%)", opacity: 0, y: 20 },
+          { clipPath: "inset(0% 0% 0% 0%)", opacity: 1, y: 0, duration: 0.7, ease: "power3.out", delay: 0.1, overwrite: true }
+        );
+        const videoEl = videoContainerRef.current.querySelector('video');
+        if (videoEl) {
+          videoEl.play().catch(() => { });
+        }
+      }
+    })();
+  };
+
+  const handleMouseLeave = () => {
+    contextSafe(() => {
+      const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+      if (!isDesktop) return;
+
+      if (imageRef.current) {
+        gsap.killTweensOf(imageRef.current);
+        gsap.to(imageRef.current, { scale: 1.2, filter: "blur(0px)", duration: 0.5, ease: "power3.out", overwrite: true });
+      }
+      if (videoContainerRef.current) {
+        gsap.killTweensOf(videoContainerRef.current);
+        gsap.to(videoContainerRef.current, {
+          clipPath: "inset(100% 0% 0% 0%)",
+          opacity: 0,
+          y: 20,
+          duration: 0.6,
+          ease: "power3.inOut",
+          overwrite: true
+        });
+        const videoEl = videoContainerRef.current.querySelector('video');
+        if (videoEl) {
+          if (videoTimeoutRef.current) {
+            clearTimeout(videoTimeoutRef.current);
+          }
+          videoTimeoutRef.current = setTimeout(() => {
+            videoEl.pause();
+            videoEl.currentTime = 0;
+          }, 400);
+        }
+      }
+    })();
+  };
+
   return (
     <TransitionLink
       href={href}
@@ -65,31 +133,42 @@ export default function ProjectCard({
       {/* Image Container */}
       <div
         ref={imageContainerRef}
-        className="relative rounded-lg lg:rounded-xl overflow-hidden w-full h-65 md:h-87.5 lg:h-[clamp(500px,32vw,800px)]"
+        className="relative rounded-lg lg:rounded-xl overflow-hidden w-full h-65 md:h-87.5 lg:h-[clamp(500px,32vw,800px)] bg-neutral-900"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <Image
+          ref={imageRef}
           src={image}
           alt={title}
           fill
           className="object-cover scale-[1.2]"
         />
+
+        {video && (
+          <div className="absolute inset-0 items-center justify-center pointer-events-none hidden lg:flex z-10">
+            <div
+              ref={videoContainerRef}
+              className="w-[50%] aspect-video rounded-lg overflow-hidden opacity-0 shadow-2xl translate-y-5 bg-black"
+            >
+              <video
+                src={video}
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Meta Row */}
       <div className="flex justify-between items-center py-4 px-2">
-        {/* Left: Author */}
-        <div className="flex items-center gap-3">
-          <div className="w-[clamp(32px,2.5vw,40px)] h-[clamp(32px,2.5vw,40px)] rounded-full overflow-hidden bg-secondary shrink-0">
-            <Image
-              src={authorIcon}
-              alt={authorName}
-              width={42}
-              height={42}
-              className="w-full h-full object-cover"
-            />
-          </div>
+        {/* Left: Title */}
+        <div className="flex pt-1 items-center gap-3">
           <span className="text-background font-semibold text-[clamp(16px,1.2vw,20px)] uppercase tracking-wide">
-            {authorName}
+            {title}
           </span>
         </div>
 
@@ -108,7 +187,10 @@ export default function ProjectCard({
       <div className="relative overflow-hidden whitespace-nowrap pt-1">
         <div className="absolute -left-1 -top-1 -bottom-1 w-14 bg-linear-to-r from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
         <div className="absolute -right-1 -top-1 -bottom-1 w-14 bg-linear-to-l from-foreground from-30% to-transparent z-10 pointer-events-none"></div>
-        <div className="animate-marquee-slow inline-flex">
+        <div
+          className="animate-marquee-slow inline-flex"
+          style={{ animationDuration: `${marqueeText.length * 4 * 0.15}s` }}
+        >
           <span className="text-bg-secondary text-[clamp(16px,1.2vw,20px)] font-normal uppercase tracking-wider">
             {marqueeText}{marqueeText}{marqueeText}{marqueeText}
           </span>

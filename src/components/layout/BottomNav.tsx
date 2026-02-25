@@ -398,15 +398,20 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
           {/* Center: Name and Marquee */}
           <div className="flex flex-col flex-1 overflow-hidden mx-2 justify-center">
             <span className="text-base font-semibold text-[16px] md:text-[18px]">PAVEL ROSENBERG</span>
-            <div className="relative overflow-hidden w-full">
+            <div className="relative overflow-hidden w-full border-2 border-foreground bg-foreground">
               <div className="absolute -left-1 -top-1 -bottom-1 w-14 bg-gradient-to-r from-foreground from-20% to-transparent z-10 pointer-events-none"></div>
               <div className="absolute -right-1 -top-1 -bottom-1 w-14 bg-gradient-to-l from-foreground from-20% to-transparent z-10 pointer-events-none"></div>
-              <div className="flex whitespace-nowrap animate-marquee px-1 mt-2">
+              <div
+                className="inline-flex w-max whitespace-nowrap animate-marquee mt-2"
+                style={{ animationDuration: '20s' }}
+              >
                 <span className="text-[14px] md:text-[16px] text-bg-secondary font-400">
-                  DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp;&nbsp;
+                  UI/UX DESIGN &nbsp;•&nbsp; FULL-STACK DEV &nbsp;•&nbsp; MOTION DESIGN &nbsp;•&nbsp; REACT &nbsp;•&nbsp; NEXT.JS &nbsp;•&nbsp; TYPESCRIPT &nbsp;•&nbsp;&nbsp;
+                  UI/UX DESIGN &nbsp;•&nbsp; FULL-STACK DEV &nbsp;•&nbsp; MOTION DESIGN &nbsp;•&nbsp; REACT &nbsp;•&nbsp; NEXT.JS &nbsp;•&nbsp; TYPESCRIPT &nbsp;•&nbsp;&nbsp;
                 </span>
                 <span className="text-[14px] md:text-[16px] text-bg-secondary font-400">
-                  DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp; DEVELOPER &nbsp;•&nbsp;&nbsp;
+                  UI/UX DESIGN &nbsp;•&nbsp; FULL-STACK DEV &nbsp;•&nbsp; MOTION DESIGN &nbsp;•&nbsp; REACT &nbsp;•&nbsp; NEXT.JS &nbsp;•&nbsp; TYPESCRIPT &nbsp;•&nbsp;&nbsp;
+                  UI/UX DESIGN &nbsp;•&nbsp; FULL-STACK DEV &nbsp;•&nbsp; MOTION DESIGN &nbsp;•&nbsp; REACT &nbsp;•&nbsp; NEXT.JS &nbsp;•&nbsp; TYPESCRIPT &nbsp;•&nbsp;&nbsp;
                 </span>
               </div>
             </div>

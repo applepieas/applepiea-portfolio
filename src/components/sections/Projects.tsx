@@ -16,15 +16,17 @@ const projects = [
     category: "Design",
     year: "2025",
     image: "/desktop-showcase.jpg",
+    video: "https://res.cloudinary.com/dsh3yslek/video/upload/v1772051704/portfolio-showreel-landingpages_lmbquz.mp4",
     tags: ["UI", "UX", "Web Design", "Motion Design", "Figma", "HTML", "CSS"],
     href: "/case-study/landing-pages",
   },
   {
     title: "Backend Integration",
     authorName: "Pavel Rosenberg",
-    category: "Product",
-    year: "2024",
+    category: "Backend",
+    year: "2026",
     image: "/card-showcase.jpg",
+    video: "https://res.cloudinary.com/dsh3yslek/video/upload/v1772051657/portfolio-showreel-nike_tqyica.mp4",
     tags: ["Next.js", "PostgreSQL", "Drizzle ORM", "Audit Logging", "Type-safe APIs", "TypeScript"],
     href: "/case-study/backend-integration",
   },
@@ -81,6 +83,7 @@ export default function Projects() {
               category={project.category}
               year={project.year}
               image={project.image}
+              video={project.video}
               tags={project.tags}
               href={project.href}
             />

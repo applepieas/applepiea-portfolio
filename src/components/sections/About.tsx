@@ -11,7 +11,6 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const indicatorRef = useRef<HTMLDivElement>(null);
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
   const copyBlocksRef = useRef<(HTMLParagraphElement | null)[]>([]);
 
@@ -110,10 +109,6 @@ export default function About() {
       onUpdate: (self) => {
         const scrollProgress = self.progress;
 
-        if (indicatorRef.current) {
-          indicatorRef.current.style.setProperty("--progress", String(scrollProgress));
-        }
-
         if (scrollProgress <= 0.5) {
           const phase1 = scrollProgress / 0.5;
           if (splitInstances[0] && splitInstances[1]) {
@@ -166,7 +161,6 @@ export default function About() {
           </div>
         </div>
 
-        <div ref={indicatorRef} className="scroll-indicator"></div>
       </section>
     </div>
   );

@@ -36,7 +36,30 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const videoMaskRef = useRef<HTMLDivElement>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isVideoReadyToPlay, setIsVideoReadyToPlay] = useState(false);
+
+  // Delay video playback by 2 seconds after loading
+  useEffect(() => {
+    if (isLoaded) {
+      const timer = setTimeout(() => setIsVideoReadyToPlay(true), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoaded]);
+
+  // Handle video play on state changes or resize
+  useEffect(() => {
+    if (isVideoReadyToPlay) {
+      if (!isMobile && desktopVideoRef.current) {
+        desktopVideoRef.current.play().catch((e) => console.error("Video play failed:", e));
+      } else if (isMobile && mobileVideoRef.current) {
+        mobileVideoRef.current.play().catch((e) => console.error("Video play failed:", e));
+      }
+    }
+  }, [isVideoReadyToPlay, isMobile]);
+
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -175,14 +198,15 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
             <div ref={videoMaskRef} className="video-container-desktop">
               <div className="video-preview">
                 <div className="video-wrapper">
-                  <iframe
-                    src="https://www.youtube.com/embed/dksakBacaik?autoplay=1&mute=1&loop=1&playlist=dksakBacaik&controls=0&playsinline=1"
-                    frameBorder="0"
-                    allow='autoplay; fullscreen; picture-in-picture'
+                  <video
+                    ref={desktopVideoRef}
+                    src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+                    loop
+                    muted
+                    playsInline
                     className='iframe-desktop pointer-events-none'
-                    loading='lazy'
                     title='fish video'
-                  ></iframe>
+                  />
                 </div>
               </div>
             </div>
@@ -193,12 +217,13 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       {/* Mobile: Static video with initial reveal animation, no scroll/mouse animations */}
       {isMobile && (
         <div className='w-[90vw] aspect-video mx-auto mt-32 rounded-2xl overflow-hidden isolate'>
-          <iframe
-            src="https://www.youtube.com/embed/dksakBacaik?autoplay=1&mute=1&loop=1&playlist=dksakBacaik&controls=0&playsinline=1"
-            frameBorder="0"
-            allow='autoplay; fullscreen; picture-in-picture'
-            className='w-full h-full pointer-events-none rounded-2xl'
-            loading='lazy'
+          <video
+            ref={mobileVideoRef}
+            src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+            loop
+            muted
+            playsInline
+            className='w-full h-full pointer-events-none rounded-2xl object-cover'
             title='fish video'
           />
         </div>

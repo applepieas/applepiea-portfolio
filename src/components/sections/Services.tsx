@@ -14,19 +14,23 @@ const services = [
     number: "01",
     title: "Design",
     description: "I design clean interfaces and build reusable component systems in Figma. Focus on layouts that look intentional, animations that feel smooth, and details that make the experience feel premium.",
-    tags: ["UI/UX DESIGN", "DESIGN SYSTEMS", "PROTOTYPING", "FIGMA"]
+    tags: ["UI/UX DESIGN", "DESIGN SYSTEMS", "PROTOTYPING", "FIGMA"],
+    image: "/design-service.jpg",
   },
   {
     number: "02",
     title: "Development",
     description: "I build full-stack web apps — everything from animated landing pages to complete platforms with databases. Clean code, smooth interactions, and backends that actually scale.",
-    tags: ["REACT", "NEXT.JS", "TYPESCRIPT", "POSTGRESQL", "TAILWIND CSS", "FRAMER MOTION", "WEBFLOW"]
+    tags: ["REACT", "NEXT.JS", "TYPESCRIPT", "POSTGRESQL", "TAILWIND CSS", "FRAMER MOTION", "WEBFLOW"],
+    image: "/development-service.jpg",
   },
   {
     number: "03",
     title: "Integration",
     description: "I connect design and code seamlessly. From prototypes to production, optimizing performance, building API architecture, and making sure everything works together perfectly.",
-    tags: ["FULL-STACK INTEGRATION", "PERFORMANCE OPTIMIZATION", "API ARCHITECTURE", "DESIGN-TO-CODE"]
+    tags: ["FULL-STACK INTEGRATION", "PERFORMANCE OPTIMIZATION", "API ARCHITECTURE", "DESIGN-TO-CODE"],
+    image: "/integration-service.jpg",
+    imagePosition: "object-[50%_75%]",
   }
 ];
 
@@ -98,6 +102,7 @@ export default function Services() {
         </div>
 
         {/* Services list */}
+        {/* FIX THE IMAGES PARALLAX */}
         <div className="bg-foreground-secondary rounded-3xl h-full px-5 py-10 mt-10 flex flex-col">
           <div className="flex-1 flex flex-col">
 
@@ -151,12 +156,12 @@ export default function Services() {
                       ref={(el) => { imageRefs.current[index] = el; }}
                       className="w-full h-[calc(200px_+_4.4vw)] md:h-[calc(400px_+_4.4vw)] lg:h-[320px] rounded-xl overflow-hidden"
                     >
-                      <div className="image-inner relative w-full h-[120%]">
+                      <div className="image-inner relative w-full h-full">
                         <Image
-                          src="/image.png"
+                          src={service.image}
                           alt={`${service.title} preview`}
                           fill
-                          className="object-cover"
+                          className={`object-cover scale-[1.2] ${service.imagePosition || ''}`}
                         />
                       </div>
                     </div>
