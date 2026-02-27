@@ -101,26 +101,37 @@ export default function About() {
 
     gsap.ticker.add(tickerCallback);
 
+    // Helper that applies the correct state for any given progress value
+    const applyProgress = (scrollProgress: number) => {
+      if (scrollProgress <= 0.5) {
+        const phase1 = scrollProgress / 0.5;
+        // Reset block 2 to hidden in case we scrolled back up
+        if (splitInstances[1]) gsap.set(splitInstances[1].words, { yPercent: -100 });
+        if (splitInstances[2]) gsap.set(splitInstances[2].words, { yPercent: -100 });
+        if (splitInstances[0] && splitInstances[1]) {
+          animateBlock(splitInstances[0], splitInstances[1], phase1);
+        }
+      } else {
+        const phase2 = (scrollProgress - 0.5) / 0.5;
+        if (splitInstances[0]) gsap.set(splitInstances[0].words, { yPercent: 100 }); // Keep hidden below
+        if (splitInstances[1] && splitInstances[2]) {
+          animateBlock(splitInstances[1], splitInstances[2], phase2);
+        }
+      }
+    };
+
     // ScrollTrigger for text animation
     const scrollTrigger = ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
       end: "bottom bottom",
       onUpdate: (self) => {
-        const scrollProgress = self.progress;
-
-        if (scrollProgress <= 0.5) {
-          const phase1 = scrollProgress / 0.5;
-          if (splitInstances[0] && splitInstances[1]) {
-            animateBlock(splitInstances[0], splitInstances[1], phase1);
-          }
-        } else {
-          const phase2 = (scrollProgress - 0.5) / 0.5;
-          if (splitInstances[0]) gsap.set(splitInstances[0].words, { yPercent: 100 }); // Keep hidden below
-          if (splitInstances[1] && splitInstances[2]) {
-            animateBlock(splitInstances[1], splitInstances[2], phase2);
-          }
-        }
+        applyProgress(self.progress);
+      },
+      // Immediately apply the correct state on creation/resize so direct
+      // navigation to #about doesn't show a broken initial state
+      onRefresh: (self) => {
+        applyProgress(self.progress);
       },
     });
 
@@ -151,6 +162,7 @@ export default function About() {
           ))}
         </div>
 
+        {/*
         <div className="marquee">
           <div ref={marqueeTrackRef} className="marquee-track">
             {[...Array(12)].map((_, i) => (
@@ -160,6 +172,7 @@ export default function About() {
             ))}
           </div>
         </div>
+        */}
 
       </section>
     </div>

@@ -14,15 +14,15 @@ interface BottomNavProps {
 }
 
 const navLinks = [
-  { name: 'Home', href: '#' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'About', href: '#about' },
+  { name: 'Home', href: '#', image: '/favicon-dark-680x680.jpg' },
+  { name: 'Projects', href: '#projects', image: '/card-showcase.jpg' },
+  { name: 'About', href: '#about', image: '/flag.png' },
 ];
 
 const socialLinks = [
-  { name: 'Instagram', href: 'https://instagram.com', icon: '/logos/instagram-svgrepo-com.svg' },
+  { name: 'Gmail', href: 'mailto:your@email.com', icon: '/logos/gmail.svg' },
   { name: 'LinkedIn', href: 'https://linkedin.com', icon: '/logos/linkedin-svgrepo-com.svg' },
-  { name: 'X', href: 'https://x.com', icon: '/logos/x-icon.svg' },
+  { name: 'GitHub', href: 'https://github.com', icon: '/logos/github.svg' },
 ];
 
 export default function BottomNav({ isLoaded = false }: BottomNavProps) {
@@ -32,6 +32,8 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
   const footerContentRef = useRef<HTMLDivElement>(null);
   const footerBottomRef = useRef<HTMLDivElement>(null);
   const mainBarRef = useRef<HTMLDivElement>(null);
+  const footerTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const isOpenRef = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isFooterMode, setIsFooterMode] = useState(false);
   // Track current breakpoint to re-run animation when crossing any breakpoint
@@ -72,10 +74,15 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
     // Reset and re-animate to ensure clean state after resize
     gsap.fromTo(
       navRef.current,
-      { yPercent: 125, scale: 0.75 },
-      { yPercent: 0, scale: 1, duration: 1, ease: 'power3.out', delay: 0.8 }
+      { x: 0, xPercent: -50, yPercent: 125, scale: 0.75 },
+      { x: 0, xPercent: -50, yPercent: 0, scale: 1, duration: 1, ease: 'power3.out', delay: 0.8 }
     );
   }, { dependencies: [isLoaded, breakpoint] });
+
+  // Keep isOpenRef in sync with isOpen state so ScrollTrigger callbacks can read it
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
 
   // Footer mode scroll trigger - only on desktop and tablet, not mobile
   useGSAP(() => {
@@ -91,8 +98,20 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
       trigger: 'body',
       start: 'bottom bottom+=100',
       end: 'bottom bottom',
-      onEnter: () => setIsFooterMode(true),
-      onLeaveBack: () => setIsFooterMode(false),
+      onEnter: () => {
+        if (isOpenRef.current) {
+          // Menu is open — close it first, then enter footer mode after the close animation
+          setIsOpen(false);
+          setTimeout(() => setIsFooterMode(true), 500);
+        } else {
+          setIsFooterMode(true);
+        }
+      },
+      onLeaveBack: () => {
+        // Ensure menu is closed when leaving footer mode
+        setIsOpen(false);
+        setIsFooterMode(false);
+      },
     });
 
     return () => {
@@ -106,7 +125,21 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
     // Skip footer expansion animation on mobile
     if (breakpoint === 'mobile') return;
 
-    const tl = gsap.timeline();
+    // Kill any in-progress footer timeline to prevent race conditions
+    if (footerTimelineRef.current) {
+      footerTimelineRef.current.kill();
+      footerTimelineRef.current = null;
+    }
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // Clear minHeight after any animation completes to prevent stale layout constraints
+        if (containerRef.current) {
+          gsap.set(containerRef.current, { minHeight: 'auto' });
+        }
+      },
+    });
+    footerTimelineRef.current = tl;
 
     if (isFooterMode) {
       // Set min-height to prevent shrinking during phase 1, while still allowing expansion
@@ -162,9 +195,14 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
       }, '-=0.25');
 
     } else {
-      // Collapse animation - reverse order, also smooth
+      // Collapse animation - sequential: height first, then width
+      // Lock container height to prevent jump when inner content collapses
 
-      // 1. First fade out and collapse footer content
+      // 1. Lock container at its current expanded height
+      const expandedHeight = containerRef.current.offsetHeight;
+      tl.set(containerRef.current, { height: expandedHeight, minHeight: 'none' });
+
+      // 2. Fade out footer content (container height is locked, so no visual jump)
       tl.to(footerBottomRef.current, {
         height: 0,
         opacity: 0,
@@ -187,10 +225,21 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
         }
       });
 
-      // 2. After content is hidden, restore main bar and collapse width (simultaneous)
-      tl.set(mainBarRef.current, { height: 'auto' });
+      // 3. Restore main bar (invisible) so container can measure target height
+      tl.add(() => {
+        if (mainBarRef.current) {
+          gsap.set(mainBarRef.current, { height: 'auto', opacity: 0 });
+        }
+      });
 
-      // Collapse width while fading in main bar content
+      // 4. Smoothly animate HEIGHT down to main bar size
+      tl.to(containerRef.current, {
+        height: 'auto',
+        duration: 0.4,
+        ease: 'power3.inOut',
+      });
+
+      // 5. THEN animate WIDTH to compact size + fade in main bar
       const responsiveWidths = {
         mobile: 'calc(100vw - 40px)',
         tablet: '80vw',
@@ -205,7 +254,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
         opacity: 1,
         duration: 0.35,
         ease: 'power2.out',
-      }, '<0.1'); // Start slightly after width collapse begins
+      }, '<0.1');
     }
   }, { dependencies: [isFooterMode, breakpoint] });
 
@@ -318,8 +367,8 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
           className="overflow-hidden"
           style={{ height: 0, opacity: 0 }}
         >
-          <div className="flex items-center justify-between px-6 py-4">
-            {/* Copyright */}
+          <div className="flex items-center justify-between px-6 py-4 pb-0">
+
             <span className="text-[12px] md:text-[14px] text-background/50 font-medium">
               {new Date().getFullYear()}
             </span>
@@ -366,10 +415,10 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
                 >
                   <div className="w-16 h-16 sm:w-[76px] sm:h-[76px] rounded-xl overflow-hidden bg-background flex-shrink-0">
                     <Image
-                      src="/image.png"
+                      src={link.image}
                       alt="Profile"
-                      width={64}
-                      height={64}
+                      width={300}
+                      height={300}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -387,10 +436,10 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
           {/* Left: Profile Image */}
           <div className="w-16 h-16 sm:w-[76px] sm:h-[76px] rounded-xl overflow-hidden bg-background flex-shrink-0">
             <Image
-              src="/image.png"
+              src="/favicon-dark-680x680.jpg"
               alt="Profile"
-              width={64}
-              height={64}
+              width={400}
+              height={400}
               className="w-full h-full object-cover"
             />
           </div>

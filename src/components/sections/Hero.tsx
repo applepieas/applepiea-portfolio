@@ -11,7 +11,7 @@ import Image from 'next/image';
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const breakpoints = [
-  { maxWidth: 900, translateY: -35, movMultiplier: 450, scale: 0.65 },
+  { maxWidth: 900, translateY: -15, movMultiplier: 450, scale: 0.65 },
   { maxWidth: 1024, translateY: -20, movMultiplier: 500, scale: 0.55 },
   { maxWidth: 1100, translateY: -20, movMultiplier: 500, scale: 0.55 },
   { maxWidth: 1200, translateY: -20, movMultiplier: 550, scale: 0.55 },
@@ -36,6 +36,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const videoMaskRef = useRef<HTMLDivElement>(null);
+  const mobileVideoContainerRef = useRef<HTMLDivElement>(null);
   const desktopVideoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -171,20 +172,29 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
   // Set initial hidden state for video mask (before preloader completes)
   useGSAP(() => {
-    if (!videoMaskRef.current) return;
-
-    // Set initial state - hidden above the screen
-    gsap.set(videoMaskRef.current, { yPercent: -110 });
+    // Desktop mask
+    if (videoMaskRef.current) {
+      gsap.set(videoMaskRef.current, { yPercent: -110 });
+    }
+    // Mobile container — same starting position so it slides from the top
+    if (mobileVideoContainerRef.current) {
+      gsap.set(mobileVideoContainerRef.current, { yPercent: -110 });
+    }
   }, { dependencies: [isMobile] }); // Re-run when mobile state changes
 
   // Video mask reveal animation (from top) - wait for preloader
   useGSAP(() => {
-    if (!videoMaskRef.current || !isLoaded) return;
+    if (!isLoaded) return;
 
-    gsap.to(
-      videoMaskRef.current,
-      { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.8 }
-    );
+    const revealProps = { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.8 };
+
+    // Reveal whichever container is currently mounted
+    if (videoMaskRef.current) {
+      gsap.to(videoMaskRef.current, revealProps);
+    }
+    if (mobileVideoContainerRef.current) {
+      gsap.to(mobileVideoContainerRef.current, revealProps);
+    }
   }, { dependencies: [isLoaded, isMobile] }); // Re-run when mobile state or load state changes
 
   const textDelay = 0.3;
@@ -215,19 +225,22 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       )}
 
       {/* Mobile: Static video with initial reveal animation, no scroll/mouse animations */}
+      {/* Outer mask — stays static, clips overflow so the slide is invisible outside this box */}
       {isMobile && (
         <div className='w-[90vw] aspect-video mx-auto mt-32 rounded-2xl overflow-hidden isolate'>
-          <video
-            ref={mobileVideoRef}
-            src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
-            loop
-            muted
-            playsInline
-            className='w-full h-full pointer-events-none rounded-2xl object-cover'
-            title='fish video'
-          />
+          {/* Inner container — this is what GSAP animates from yPercent -110 → 0 */}
+          <div ref={mobileVideoContainerRef} className='w-full h-full'>
+            <video
+              ref={mobileVideoRef}
+              src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+              loop
+              muted
+              playsInline
+              className='w-full h-full pointer-events-none rounded-2xl object-cover'
+              title='fish video'
+            />
+          </div>
         </div>
-
       )}
 
       {/* Mobile: "A PRETTY DECENT" at top under header */}
@@ -285,7 +298,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       <div className='flex justify-center align-center font-semibold text-[20px] h-[100vh]'>
         <p className='text-background'>OUTRO</p>
       </div>
-    </section>
+    </section >
   )
 }
 

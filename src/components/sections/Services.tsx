@@ -35,33 +35,33 @@ const services = [
 ];
 
 export default function Services() {
-  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
-    imageRefs.current.forEach((imageContainer) => {
-      if (!imageContainer) return;
+    const imageContainers = gsap.utils.toArray<HTMLElement>('.service-image-container');
 
-      const imageInner = imageContainer.querySelector('.image-inner');
-      const img = imageContainer.querySelector('img');
+    imageContainers.forEach((imageContainer) => {
+      const imageInner = imageContainer.querySelector<HTMLElement>('.image-inner');
+      const img = imageContainer.querySelector<HTMLElement>('img');
       if (!imageInner || !img) return;
 
-      // Mask reveal animation (from top)
-      gsap.fromTo(
-        imageInner,
-        { yPercent: -100 },
-        {
-          yPercent: 0,
-          duration: 0.8,
-          ease: 'easeInOut',
-          scrollTrigger: {
-            trigger: imageContainer,
-            start: 'top 80%',
-            once: true,
-          }
+      // Mask reveal — gsap.from() handles both initial state (yPercent: -100)
+      // and the animation atomically, avoiding race conditions when elements
+      // are already in viewport on mobile/tablet at load time.
+      gsap.from(imageInner, {
+        yPercent: -100,
+        duration: 0.8,
+        delay: 0.1,
+        ease: 'power2.inOut',
+        scrollTrigger: {
+          trigger: imageContainer,
+          start: 'top 95%',
+          toggleActions: 'play none none none',
+          invalidateOnRefresh: true,
         }
-      );
+      });
 
-      // Parallax scroll effect on the image
+      // Parallax scroll effect on the image itself
       gsap.fromTo(
         img,
         { yPercent: -10 },
@@ -73,14 +73,15 @@ export default function Services() {
             start: 'top bottom',
             end: 'bottom top',
             scrub: 1,
+            invalidateOnRefresh: true,
           }
         }
       );
     });
-  });
+  }, { scope: sectionRef });
 
   return (
-    <section className="w-full px-3 lg:px-6 py-64">
+    <section ref={sectionRef} className="w-full px-3 lg:px-6 py-64">
       {/* Dark container with rounded corners */}
       <div className="bg-foreground text-background rounded-3xl h-full p-5 pt-6 lg:pt-25 flex flex-col">
 
@@ -153,8 +154,7 @@ export default function Services() {
                   {/* Image with mask reveal and parallax */}
                   <div className="lg:col-span-3">
                     <div
-                      ref={(el) => { imageRefs.current[index] = el; }}
-                      className="w-full h-[calc(200px_+_4.4vw)] md:h-[calc(400px_+_4.4vw)] lg:h-[320px] rounded-xl overflow-hidden"
+                      className="service-image-container w-full h-[calc(200px_+_4.4vw)] md:h-[calc(400px_+_4.4vw)] lg:h-[320px] rounded-xl overflow-hidden"
                     >
                       <div className="image-inner relative w-full h-full">
                         <Image
