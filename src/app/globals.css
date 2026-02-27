@@ -38,6 +38,11 @@ body {
   display: inline-block;
 }
 
+/* GPU layer promotion for project card scroll animations */
+.project-card {
+  will-change: transform, opacity;
+}
+
 
 .intro {
   position: sticky;

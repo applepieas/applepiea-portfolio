@@ -54,6 +54,7 @@ export default function ProjectCard({
       {
         yPercent: 10,
         ease: 'none',
+        force3D: true,
         scrollTrigger: {
           trigger: imageContainerRef.current,
           start: 'top bottom',
@@ -142,7 +143,9 @@ export default function ProjectCard({
           src={image}
           alt={title}
           fill
-          className="object-cover scale-[1.2]"
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover scale-[1.2] will-change-transform"
         />
 
         {video && (

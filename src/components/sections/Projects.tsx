@@ -41,7 +41,7 @@ export default function Projects() {
 
     const cards = cardsContainerRef.current.querySelectorAll('.project-card');
 
-    gsap.set(cards, { y: 100, opacity: 0 });
+    gsap.set(cards, { y: 100, opacity: 0, willChange: 'transform, opacity' });
 
     gsap.to(cards, {
       y: 0,
@@ -49,10 +49,15 @@ export default function Projects() {
       duration: 1,
       stagger: 0.15,
       ease: 'power3.out',
+      force3D: true,
       scrollTrigger: {
         trigger: cardsContainerRef.current,
         start: 'top 80%',
         once: true,
+      },
+      onComplete: () => {
+        // Free GPU memory after animation completes
+        gsap.set(cards, { willChange: 'auto' });
       }
     });
   });
