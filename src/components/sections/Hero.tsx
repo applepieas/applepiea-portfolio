@@ -271,7 +271,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
 
         <Copy animateOnScroll={false} delay={textDelay} className='w-full ' isReady={isLoaded}>
-          <h1 className='font-bold hero-title text-[clamp(11.5vw,20vw,11.5vw)] max-lg:text-[20vw] w-full whitespace-nowrap max-lg:whitespace-normal max-lg:text-center tracking-tighter leading-[0.85] md:align-middle overflow-visible'>
+          <h1 className='font-bold hero-title text-[clamp(11.7vw,20vw,11.5vw)] max-lg:text-[20vw] w-full whitespace-nowrap max-lg:whitespace-normal max-lg:text-center tracking-tighter leading-[0.85] md:align-middle overflow-visible'>
             <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>DESIGN</span>
             <span className='inline max-lg:hidden'> </span>
             <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>ENGINEER</span>

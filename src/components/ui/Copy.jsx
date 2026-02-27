@@ -82,6 +82,17 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
         }
 
         lines.current.push(split.lines);
+
+        // SplitText mask:'lines' creates wrappers with overflow:hidden.
+        // Switch to overflow-y:clip (keeps vertical mask for reveal animation)
+        // + overflow-x:visible (prevents horizontal clipping of letters like "R"
+        // on tight line-heights). CSS 'clip' can be mixed with 'visible' per-axis.
+        split.lines.forEach((line) => {
+          if (line.parentElement?.style) {
+            line.parentElement.style.overflowX = 'visible';
+            line.parentElement.style.overflowY = 'clip';
+          }
+        });
       }
     });
 

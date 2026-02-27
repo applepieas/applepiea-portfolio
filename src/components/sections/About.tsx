@@ -147,7 +147,7 @@ export default function About() {
   return (
     <div id="about" ref={containerRef} className="relative mt-0 lg:mt-32 mx-10 h-[600vh] w-full">
       <section className="sticky top-0 left-0 w-full h-screen overflow-hidden">
-        <div className="absolute pb-20 lg:pb-0 inset-0 flex justify-center items-center px-8 max-w-7xl mx-auto flex-col lg:flex-row gap-20 lg:gap-24">
+        <div className="absolute pb-20 lg:pb-0 inset-0 flex justify-center items-center px-8 max-w-7xl mx-auto flex-col lg:flex-row gap-[clamp(3rem,8vw,5rem)] lg:gap-24">
 
           {[
             "18-year-old designer and developer from Prague, teaching myself by building real things.",
@@ -156,7 +156,7 @@ export default function About() {
           ].map((text, i) => (
             <div key={i} className="copy-block">
               <p ref={(el) => { copyBlocksRef.current[i] = el; }}
-                className="text-[1.75rem] font-semibold -tracking-[0.025rem] leading-[2rem]"
+                className="text-[clamp(1.375rem,5.5vw,1.75rem)] font-semibold -tracking-[0.025rem] leading-[clamp(1.625rem,6.5vw,2rem)]"
               >{text}</p>
             </div>
           ))}
