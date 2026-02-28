@@ -212,7 +212,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
                 <div className="video-wrapper">
                   <video
                     ref={desktopVideoRef}
-                    src="https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto,w_1280/v1772040750/My_Movie_cjgr03.mp4"
+                    src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
                     preload="auto"
                     poster="/Mockup-product-details.jpg"
                     loop
@@ -282,7 +282,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
           <h1 className='font-bold hero-title text-[clamp(11.7vw,20vw,11.5vw)] max-lg:text-[20vw] w-full whitespace-nowrap max-lg:whitespace-normal max-lg:text-center tracking-tighter leading-[0.85] md:align-middle overflow-visible'>
             <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>DESIGN</span>
             <span className='inline max-lg:hidden'> </span>
-            <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>ENGINEER</span>
+            <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto mr-2 lg:mr-0'>ENGINEER</span>
           </h1>
         </Copy>
       </div>
