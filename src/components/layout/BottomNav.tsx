@@ -20,9 +20,9 @@ const navLinks = [
 ];
 
 const socialLinks = [
-  { name: 'Gmail', href: 'mailto:your@email.com', icon: '/logos/gmail.svg' },
-  { name: 'LinkedIn', href: 'https://linkedin.com', icon: '/logos/linkedin-svgrepo-com.svg' },
-  { name: 'GitHub', href: 'https://github.com', icon: '/logos/github.svg' },
+  { name: 'Gmail', href: 'mailto:vapel.rosenberg@gmail.com', icon: '/logos/gmail.svg' },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/in/pavel-rosenberg-04b976267/', icon: '/logos/linkedin-svgrepo-com.svg' },
+  { name: 'GitHub', href: 'https://github.com/applepieas', icon: '/logos/github.svg' },
 ];
 
 export default function BottomNav({ isLoaded = false }: BottomNavProps) {
