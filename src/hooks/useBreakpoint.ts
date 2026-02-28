@@ -1,3 +1,4 @@
+// src/hooks/useBreakpoint.ts
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -11,35 +12,41 @@ const BREAKPOINTS = {
   xl: 1280,
 } as const;
 
+const getBreakpoint = (width: number): Breakpoint => {
+  if (width >= BREAKPOINTS.xl) return 'xl';
+  if (width >= BREAKPOINTS.lg) return 'lg';
+  if (width >= BREAKPOINTS.md) return 'md';
+  if (width >= BREAKPOINTS.sm) return 'sm';
+  return 'xs';
+};
+
 /**
  * Hook that returns the current Tailwind breakpoint based on viewport width.
  * SSR-safe: returns 'xs' on server, updates on client mount.
- * 
- * @returns Current breakpoint: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+ * Uses a debounced resize listener to avoid excessive re-renders.
  */
 export const useBreakpoint = (): Breakpoint => {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('xs');
 
   useEffect(() => {
-    const getBreakpoint = (width: number): Breakpoint => {
-      if (width >= BREAKPOINTS.xl) return 'xl';
-      if (width >= BREAKPOINTS.lg) return 'lg';
-      if (width >= BREAKPOINTS.md) return 'md';
-      if (width >= BREAKPOINTS.sm) return 'sm';
-      return 'xs';
-    };
+    // Set initial value immediately
+    setBreakpoint(getBreakpoint(window.innerWidth));
+
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     const handleResize = () => {
-      setBreakpoint(getBreakpoint(window.innerWidth));
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setBreakpoint(getBreakpoint(window.innerWidth));
+      }, 150); // 150ms debounce — fast enough to feel responsive, avoids thrashing
     };
 
-    // Set initial value
-    handleResize();
+    window.addEventListener('resize', handleResize, { passive: true });
 
-    // Add resize listener
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return breakpoint;
@@ -47,8 +54,6 @@ export const useBreakpoint = (): Breakpoint => {
 
 /**
  * Helper to check if current breakpoint is at or above a target.
- * @param current - Current breakpoint from useBreakpoint()
- * @param target - Target breakpoint to compare against
  */
 export const isBreakpointAtLeast = (current: Breakpoint, target: Breakpoint): boolean => {
   const order: Breakpoint[] = ['xs', 'sm', 'md', 'lg', 'xl'];

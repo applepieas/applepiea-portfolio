@@ -38,9 +38,9 @@ body {
   display: inline-block;
 }
 
-/* GPU layer promotion for project card scroll animations */
+/* GPU layer promotion: applied by JS just-in-time, not statically */
 .project-card {
-  will-change: transform, opacity;
+  /* will-change is set dynamically in GSAP ScrollTrigger onEnter/onLeave */
 }
 
 
@@ -250,4 +250,17 @@ body {
   animation-delay: 2.5s;
   /* Wait for initial Copy animation to complete */
   animation-fill-mode: backwards;
+}
+
+/* Accessibility: respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

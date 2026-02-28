@@ -1,3 +1,4 @@
+// src/components/ui/VideoCarousel.tsx
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
@@ -15,7 +16,6 @@ export default function VideoCarousel({ videos, className = '' }: VideoCarouselP
     const next = (index + videos.length) % videos.length;
     setActiveIndex(next);
 
-    // Play the newly visible video from the start
     const video = videoRefs.current[next];
     if (video) {
       video.currentTime = 0;
@@ -24,7 +24,6 @@ export default function VideoCarousel({ videos, className = '' }: VideoCarouselP
   }, [videos.length]);
 
   const handleVideoEnd = useCallback((index: number) => {
-    // Auto-advance when a video finishes
     if (index === activeIndex) {
       goTo(activeIndex + 1);
     }
@@ -37,19 +36,28 @@ export default function VideoCarousel({ videos, className = '' }: VideoCarouselP
         className="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]"
         style={{ transform: `translateX(-${activeIndex * 100}%)` }}
       >
-        {videos.map((src, i) => (
-          <div key={src} className="w-full h-full flex-shrink-0">
-            <video
-              ref={(el) => { videoRefs.current[i] = el; }}
-              autoPlay={i === 0}
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              src={src}
-              onEnded={() => handleVideoEnd(i)}
-            />
-          </div>
-        ))}
+        {videos.map((src, i) => {
+          // Only give a src to the active video and the next one (for instant transition).
+          // All others get preload="none" and no src until they become active.
+          const isActive = i === activeIndex;
+          const isNext = i === (activeIndex + 1) % videos.length;
+          const shouldLoad = isActive || isNext;
+
+          return (
+            <div key={src} className="w-full h-full flex-shrink-0">
+              <video
+                ref={(el) => { videoRefs.current[i] = el; }}
+                autoPlay={i === 0}
+                muted
+                playsInline
+                preload={isActive ? 'auto' : 'none'}
+                src={shouldLoad ? src : undefined}
+                className="w-full h-full object-cover"
+                onEnded={() => handleVideoEnd(i)}
+              />
+            </div>
+          );
+        })}
       </div>
 
       {/* Left arrow */}

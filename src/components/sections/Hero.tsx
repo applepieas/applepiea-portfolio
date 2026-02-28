@@ -42,11 +42,10 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isVideoReadyToPlay, setIsVideoReadyToPlay] = useState(false);
 
-  // Delay video playback by 2 seconds after loading
+  // Start video playback immediately once the preloader signals isLoaded
   useEffect(() => {
     if (isLoaded) {
-      const timer = setTimeout(() => setIsVideoReadyToPlay(true), 2000);
-      return () => clearTimeout(timer);
+      setIsVideoReadyToPlay(true);
     }
   }, [isLoaded]);
 
@@ -114,7 +113,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       // Start slightly above center:  -50 is center, so -60 would be 10% above center
       const startYPercent = -50 + translateY;
 
-      console.log('Hero:  Setting initial state', { translateY, startYPercent, scale });
+
 
       gsap.killTweensOf(videoRef.current);
 
@@ -211,11 +210,14 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
                   <video
                     ref={desktopVideoRef}
                     src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+                    preload="auto"
+                    poster="/Mockup-product-details.jpg"
                     loop
                     muted
                     playsInline
                     className='iframe-desktop pointer-events-none'
                     title='fish video'
+                    onPause={(e) => { e.currentTarget.play().catch(() => { }); }}
                   />
                 </div>
               </div>
@@ -233,11 +235,14 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
             <video
               ref={mobileVideoRef}
               src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+              preload="metadata"
+              poster="/Mockup-product-details.jpg"
               loop
               muted
               playsInline
               className='w-full h-full pointer-events-none rounded-2xl object-cover'
               title='fish video'
+              onPause={(e) => { e.currentTarget.play().catch(() => { }); }}
             />
           </div>
         </div>

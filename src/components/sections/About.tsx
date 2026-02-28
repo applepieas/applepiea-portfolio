@@ -24,10 +24,9 @@ export default function About() {
     let marqueePosition = 0;
     let smoothVelocity = 0;
 
-    // Track scroll velocity from Lenis
+    // Track scroll velocity from Lenis (ScrollTrigger.update is handled by LenisProvider)
     const handleScroll = (e: { velocity: number }) => {
       targetVelocity = Math.abs(e.velocity) * 0.02;
-      ScrollTrigger.update();
     };
 
     lenis?.on("scroll", handleScroll);
@@ -99,7 +98,10 @@ export default function About() {
       targetVelocity *= 0.9;
     };
 
-    gsap.ticker.add(tickerCallback);
+    // Only register the ticker if the marquee is mounted (it is currently commented out in JSX)
+    if (marqueeTrack) {
+      gsap.ticker.add(tickerCallback);
+    }
 
     // Helper that applies the correct state for any given progress value
     const applyProgress = (scrollProgress: number) => {
@@ -138,7 +140,9 @@ export default function About() {
     // Cleanup
     return () => {
       lenis?.off("scroll", handleScroll);
-      gsap.ticker.remove(tickerCallback);
+      if (marqueeTrack) {
+        gsap.ticker.remove(tickerCallback);
+      }
       scrollTrigger.kill();
       splitInstances.forEach((instance) => instance.revert());
     };
