@@ -114,8 +114,6 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       // Start slightly above center:  -50 is center, so -60 would be 10% above center
       const startYPercent = -50 + translateY;
 
-      console.log('Hero:  Setting initial state', { translateY, startYPercent, scale });
-
       gsap.killTweensOf(videoRef.current);
 
       gsap.set(videoRef.current, {

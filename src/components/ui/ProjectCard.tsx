@@ -159,6 +159,7 @@ export default function ProjectCard({
                 muted
                 loop
                 playsInline
+                preload="none"
                 className="w-full h-full object-cover"
               />
             </div>

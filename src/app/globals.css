@@ -39,9 +39,7 @@ body {
 }
 
 /* GPU layer promotion for project card scroll animations */
-.project-card {
-  will-change: transform, opacity;
-}
+/* will-change is set/cleared by GSAP in Projects.tsx to avoid wasting GPU memory */
 
 
 .intro {
@@ -250,4 +248,21 @@ body {
   animation-delay: 2.5s;
   /* Wait for initial Copy animation to complete */
   animation-fill-mode: backwards;
+}
+
+/* ---- Accessibility: respect the OS reduced-motion preference ---- */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all CSS animations and transitions */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Keep scroll behavior instant */
+  html {
+    scroll-behavior: auto !important;
+  }
 }
