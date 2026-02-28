@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -24,10 +23,10 @@ export default function About() {
     let marqueePosition = 0;
     let smoothVelocity = 0;
 
-    // Track scroll velocity from Lenis
+    // Track scroll velocity from Lenis (ScrollTrigger.update is already called
+    // by LenisProvider on every scroll tick, so we only need velocity here)
     const handleScroll = (e: { velocity: number }) => {
       targetVelocity = Math.abs(e.velocity) * 0.02;
-      ScrollTrigger.update();
     };
 
     lenis?.on("scroll", handleScroll);

@@ -74,7 +74,7 @@ export default function Stack() {
       // Clone the character for the "incoming" animation
       const clone = char.cloneNode(true) as HTMLElement;
       clone.className = "flip-char-clone";
-      clone.style.cssText = "display: block; position: absolute; top: 100%; left: 0;";
+      clone.style.cssText = "display: block; position: absolute; top: 0; left: 0; transform: translateY(100%)";
 
       // Wrap the original char
       char.parentNode?.insertBefore(wrapper, char);
@@ -112,17 +112,21 @@ export default function Stack() {
         }
       });
 
-      // Clone comes in from bottom
-      gsap.to(clone, {
-        top: "0%",
-        ease: "power2.inOut",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: `top+=${startPercent * 100}% 80%`,
-          end: `top+=${endPercent * 100}% 40%`,
-          scrub: 1.5,
+      // Clone comes in from bottom (GPU-accelerated transform instead of top)
+      gsap.fromTo(
+        clone,
+        { yPercent: 100 },
+        {
+          yPercent: 0,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: `top+=${startPercent * 100}% 80%`,
+            end: `top+=${endPercent * 100}% 40%`,
+            scrub: 1.5,
+          }
         }
-      });
+      );
     });
 
     return () => {
