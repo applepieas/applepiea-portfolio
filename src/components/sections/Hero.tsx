@@ -212,7 +212,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
                 <div className="video-wrapper">
                   <video
                     ref={desktopVideoRef}
-                    src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+                    src="https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto,w_1280/v1772040750/My_Movie_cjgr03.mp4"
                     preload="auto"
                     poster="/Mockup-product-details.jpg"
                     loop
