@@ -1,7 +1,35 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import dynamic from 'next/dynamic';
+
+// Lazy-load the syntax highlighter — it's ~90kB gzipped and only visible
+// when the user scrolls to the Stack section. A skeleton placeholder
+// matches the dark code area so there's no layout shift.
+const SyntaxHighlighter = dynamic(
+  () => import('react-syntax-highlighter').then((mod) => mod.Prism),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        style={{
+          margin: 0,
+          padding: '1rem 1.5rem',
+          height: '100%',
+          background: 'transparent',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'rgba(0,0,0,0.2)',
+          fontSize: '13px',
+          fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+        }}
+      >
+        Loading...
+      </div>
+    ),
+  }
+);
 
 /* ──────────────────────────────────────────────
    Custom Light Theme (VS Code–inspired)

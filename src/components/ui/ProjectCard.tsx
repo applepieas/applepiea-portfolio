@@ -42,11 +42,15 @@ export default function ProjectCard({
 
   const { contextSafe } = useGSAP({ scope: imageContainerRef });
 
-  // Parallax scroll effect on the image
+  // Parallax scroll effect on the image — desktop only
+  // On mobile: scrub animations on every card image are too costly per scroll tick
   useGSAP(() => {
-    if (!imageContainerRef.current) return;
+    if (!imageContainerRef.current || !imageRef.current) return;
 
-    if (!imageRef.current) return;
+    // Skip parallax on mobile/touch devices — imperceptible on small screens,
+    // costly on every scroll tick
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+    if (isMobile) return;
 
     gsap.fromTo(
       imageRef.current,
@@ -145,7 +149,7 @@ export default function ProjectCard({
           fill
           priority
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover scale-[1.2] will-change-transform"
+          className="object-cover scale-[1.2]"
         />
 
         {video && (

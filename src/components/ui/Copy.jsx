@@ -21,115 +21,117 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
   const [initialHidden, setInitialHidden] = useState(true);
 
   useGSAP(() => {
-
     if (!containerRef.current || !isReady) return;
 
-    splitRef.current = [];
-    elementRef.current = [];
-    lines.current = [];
+    // Wait for all fonts to finish loading before splitting text.
+    // SplitText measures line breaks using actual font metrics — running it
+    // before fonts are ready causes incorrect splits that break silently
+    // when the real font swaps in (GSAP warns: "SplitText called before fonts loaded").
+    let cancelled = false;
 
-    let elements = [];
-    if (containerRef.current.hasAttribute('data-copy-wrapper')) {
-      elements = Array.from(containerRef.current.children);
-    } else {
-      elements = [containerRef.current];
-    }
+    document.fonts.ready.then(() => {
+      // Guard against the component unmounting or effect re-running
+      // while we were waiting for fonts
+      if (cancelled || !containerRef.current) return;
 
-    elements.forEach((element) => {
-      const tagName = element.tagName?.toLowerCase();
+      splitRef.current = [];
+      elementRef.current = [];
+      lines.current = [];
 
-      // If it's an image or SVG, wrap it in a mask div so it can be revealed like text
-      if (['img', 'svg'].includes(tagName)) {
-        const mask = document.createElement('div');
-        mask.style.overflow = 'hidden';
-        mask.style.display = 'inline-block';
-        mask.style.verticalAlign = 'middle';
-        mask.style.lineHeight = '0'; // Prevent extra spacing
-
-        // Move any margin from the image to the mask container
-        const computedStyle = window.getComputedStyle(element);
-        mask.style.margin = computedStyle.margin;
-        element.style.margin = '0';
-
-        element.parentNode?.insertBefore(mask, element);
-        mask.appendChild(element);
-
-        lines.current.push(element);
-        masksRef.current.push({ mask, element });
-        return;
+      let elements = [];
+      if (containerRef.current.hasAttribute('data-copy-wrapper')) {
+        elements = Array.from(containerRef.current.children);
+      } else {
+        elements = [containerRef.current];
       }
 
-      // Only apply SplitText to elements with actual text
-      if (element.textContent?.trim().length > 0) {
-        elementRef.current.push(element);
+      elements.forEach((element) => {
+        const tagName = element.tagName?.toLowerCase();
 
-        const split = SplitText.create(element, {
-          type: 'lines',
-          mask: 'lines',
-          linesClass: 'line++'
-        });
+        if (['img', 'svg'].includes(tagName)) {
+          const mask = document.createElement('div');
+          mask.style.overflow = 'hidden';
+          mask.style.display = 'inline-block';
+          mask.style.verticalAlign = 'middle';
+          mask.style.lineHeight = '0';
 
-        splitRef.current.push(split);
+          const computedStyle = window.getComputedStyle(element);
+          mask.style.margin = computedStyle.margin;
+          element.style.margin = '0';
 
-        const computedStyle = window.getComputedStyle(element);
-        const textIndent = computedStyle.textIndent;
+          element.parentNode?.insertBefore(mask, element);
+          mask.appendChild(element);
 
-        if (textIndent && textIndent !== '0px') {
-          if (split.lines.length > 0) {
-            split.lines[0].style.paddingLeft = textIndent;
-          }
-          element.style.textIndent = '0';
+          lines.current.push(element);
+          masksRef.current.push({ mask, element });
+          return;
         }
 
-        lines.current.push(split.lines);
+        if (element.textContent?.trim().length > 0) {
+          elementRef.current.push(element);
 
-        // SplitText mask:'lines' creates wrappers with overflow:hidden.
-        // Switch to overflow-y:clip (keeps vertical mask for reveal animation)
-        // + overflow-x:visible (prevents horizontal clipping of letters like "R"
-        // on tight line-heights). CSS 'clip' can be mixed with 'visible' per-axis.
-        split.lines.forEach((line) => {
-          if (line.parentElement?.style) {
-            line.parentElement.style.overflowX = 'visible';
-            line.parentElement.style.overflowY = 'clip';
+          const split = SplitText.create(element, {
+            type: 'lines',
+            mask: 'lines',
+            linesClass: 'line++'
+          });
+
+          splitRef.current.push(split);
+
+          const computedStyle = window.getComputedStyle(element);
+          const textIndent = computedStyle.textIndent;
+
+          if (textIndent && textIndent !== '0px') {
+            if (split.lines.length > 0) {
+              split.lines[0].style.paddingLeft = textIndent;
+            }
+            element.style.textIndent = '0';
+          }
+
+          lines.current.push(split.lines);
+
+          split.lines.forEach((line) => {
+            if (line.parentElement?.style) {
+              line.parentElement.style.overflowX = 'visible';
+              line.parentElement.style.overflowY = 'clip';
+            }
+          });
+        }
+      });
+
+      gsap.set(lines.current, { y: '100%' });
+
+      setInitialHidden(false);
+
+      const animationProps = {
+        y: '0%',
+        duration: 1.5,
+        ease: 'power3.out',
+        stagger: 0.1,
+        delay: delay,
+      };
+
+      if (animateOnScroll) {
+        gsap.to(lines.current, {
+          ...animationProps,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 80%',
+            once: true,
           }
         });
+      } else {
+        gsap.to(lines.current, animationProps);
       }
     });
 
-    gsap.set(lines.current, { y: '100%' });
-
-    // Content is now positioned, reveal it
-    setInitialHidden(false);
-
-    const animationProps = {
-      y: '0%',
-      duration: 1.5,
-      ease: 'power3.out',
-      stagger: 0.1,
-      delay: delay,
-    };
-
-    if (animateOnScroll) {
-      gsap.to(lines.current, {
-        ...animationProps,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 80%',
-          once: true,
-        }
-      })
-    } else {
-      gsap.to(lines.current, animationProps);
-    };
-
     return () => {
-      // Revert SplitText
+      // Signal the fonts.ready callback to abort if it fires after cleanup
+      cancelled = true;
+
       splitRef.current.forEach((split) => {
-        if (split) {
-          split.revert();
-        }
+        if (split) split.revert();
       });
-      // Unwrap any images from our manual masks
       masksRef.current.forEach(({ mask, element }) => {
         if (mask && mask.parentNode) {
           mask.parentNode.insertBefore(element, mask);

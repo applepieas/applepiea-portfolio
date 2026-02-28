@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/providers/LenisProvider";
@@ -30,6 +30,15 @@ export const metadata: Metadata = {
       media: "(prefers-color-scheme: dark)",
     },
   ],
+};
+
+export const viewport: Viewport = {
+  // viewport-fit=cover is required for env(safe-area-inset-bottom) to
+  // return the real safe area height on iOS and Android Chrome.
+  // Without this the env() variable always resolves to 0.
+  viewportFit: 'cover',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({

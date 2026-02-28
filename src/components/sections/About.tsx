@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
@@ -17,7 +18,7 @@ export default function About() {
   // Access Lenis from your existing provider
   const lenis = useLenis();
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!containerRef.current) return;
 
     let targetVelocity = 0;
@@ -146,10 +147,10 @@ export default function About() {
       scrollTrigger.kill();
       splitInstances.forEach((instance) => instance.revert());
     };
-  }, [lenis]);
+  }, { scope: containerRef, dependencies: [lenis] });
 
   return (
-    <div id="about" ref={containerRef} className="relative mt-0 lg:mt-32 mx-10 h-[600vh] w-full">
+    <div id="about" ref={containerRef} className="relative mt-0 lg:mt-32 mx-10 h-[300vh] lg:h-[600vh] w-full">
       <section className="sticky top-0 left-0 w-full h-screen overflow-hidden">
         <div className="absolute pb-20 lg:pb-0 inset-0 flex justify-center items-center px-8 max-w-7xl mx-auto flex-col lg:flex-row gap-[clamp(3rem,8vw,5rem)] lg:gap-24">
 

@@ -39,20 +39,45 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
   // Track current breakpoint to re-run animation when crossing any breakpoint
   const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
 
-  // Detect breakpoint changes for all 3 breakpoints (mobile < 768, tablet 768-1023, desktop >= 1024)
+  // Detect breakpoint changes using matchMedia — more reliable than resize events
+  // on mobile where the browser chrome resizing (address bar hide/show) fires
+  // spurious resize events that would kill all ScrollTriggers mid-scroll.
   useEffect(() => {
-    const getBreakpoint = () => {
+    const getBreakpoint = (): 'mobile' | 'tablet' | 'desktop' => {
       if (window.innerWidth >= 1024) return 'desktop';
       if (window.innerWidth >= 768) return 'tablet';
       return 'mobile';
     };
 
+    // Set initial value immediately
+    setBreakpoint(getBreakpoint());
+
+    // Use a debounced resize listener so that the mobile browser chrome
+    // auto-hide/show (which fires resize) doesn't trigger a full re-render
+    // and ScrollTrigger rebuild on every scroll bounce.
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    let lastBreakpoint = getBreakpoint();
+
     const handleResize = () => {
-      setBreakpoint(getBreakpoint());
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const newBreakpoint = getBreakpoint();
+        // Only update state if the breakpoint category actually changed —
+        // this prevents re-renders from sub-breakpoint size fluctuations
+        // (e.g. mobile browser chrome showing/hiding ≈ 60–80px height change)
+        if (newBreakpoint !== lastBreakpoint) {
+          lastBreakpoint = newBreakpoint;
+          setBreakpoint(newBreakpoint);
+        }
+      }, 300); // 300ms debounce — long enough to ignore chrome auto-hide flicker
     };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    return () => {
+      clearTimeout(debounceTimer);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   // Initial slide-up animation - re-runs on any breakpoint change to prevent stale states
@@ -94,7 +119,9 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
       return;
     }
 
-    ScrollTrigger.create({
+    // Store a reference to ONLY this ScrollTrigger so cleanup
+    // doesn't accidentally kill every ScrollTrigger on the page
+    const footerTrigger = ScrollTrigger.create({
       trigger: 'body',
       start: 'bottom bottom+=100',
       end: 'bottom bottom',
@@ -115,7 +142,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      footerTrigger.kill(); // Kill ONLY this trigger, not everything on the page
     };
   }, { dependencies: [isLoaded, breakpoint] });
 
@@ -320,7 +347,7 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
   return (
     <nav
       ref={navRef}
-      className="fixed sm:bottom-3 bottom-5  left-1/2 -translate-x-1/2 z-[1000]"
+      className="fixed left-1/2 -translate-x-1/2 z-[1000] bottom-nav-safe"
       style={{ visibility: isLoaded ? 'visible' : 'hidden' }}
     >
       <div

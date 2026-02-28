@@ -132,34 +132,37 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
     gsap.delayedCall(0.01, updateInitialState);
 
+    let mouseMoveRafId: number | null = null;
     const handleMouseMove = (e: MouseEvent) => {
-      if (!videoRef.current) return;
+      // Throttle to one execution per animation frame — prevents calling
+      // gsap.to() and getProperty() 200 times/sec on fast mouse movement
+      if (mouseMoveRafId !== null) return;
+      mouseMoveRafId = requestAnimationFrame(() => {
+        mouseMoveRafId = null;
+        if (!videoRef.current) return;
 
-      const targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-      const currentScale = gsap.getProperty(videoRef.current, "scale") as number;
-      const { movMultiplier } = getInitialValues(window.innerWidth);
-      const scaleMovMultiplier = (1 - currentScale) * movMultiplier;
+        const targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        const currentScale = gsap.getProperty(videoRef.current, "scale") as number;
+        const { movMultiplier } = getInitialValues(window.innerWidth);
+        const scaleMovMultiplier = (1 - currentScale) * movMultiplier;
 
-      // Calculate base offset from mouse position and scale
-      const baseOffset = currentScale < 0.95 ? targetMouseX * scaleMovMultiplier : 0;
+        const baseOffset = currentScale < 0.95 ? targetMouseX * scaleMovMultiplier : 0;
+        currentXOffset = baseOffset;
 
-      // Store the base offset so scroll can gradually reduce it
-      currentXOffset = baseOffset;
-
-      // Apply with scroll progress reduction
-      const xOffset = baseOffset * (1 - scrollProgress);
-
-      gsap.to(videoRef.current, {
-        x: xOffset,
-        duration: 0.5,
-        overwrite: 'auto'
+        const xOffset = baseOffset * (1 - scrollProgress);
+        gsap.to(videoRef.current, {
+          x: xOffset,
+          duration: 0.5,
+          overwrite: 'auto'
+        });
       });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('resize', updateInitialState);
 
     return () => {
+      if (mouseMoveRafId !== null) cancelAnimationFrame(mouseMoveRafId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', updateInitialState);
       if (scrollTween) scrollTween.kill();

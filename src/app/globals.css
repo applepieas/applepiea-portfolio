@@ -23,6 +23,9 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   overflow-x: visible;
+  /* Allow safe-area-inset-bottom to work on iOS and Android Chrome.
+     viewport-fit=cover must also be set in the HTML meta tag (see layout.tsx). */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* span {
@@ -192,10 +195,10 @@ body {
   overflow: hidden;
 }
 
-/* Bottom Nav Marquee Animation */
+/* Marquee keyframes — must use transform only for GPU compositing */
 @keyframes marquee {
   0% {
-    transform: translateX(0);
+    transform: translateX(0%);
   }
 
   100% {
@@ -204,12 +207,24 @@ body {
 }
 
 .animate-marquee {
-  animation: marquee 10s linear infinite;
+  animation: marquee 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes marquee-slow {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-marquee-slow {
   display: inline-flex;
-  animation: marquee 40s linear infinite;
+  animation: marquee-slow 30s linear infinite;
+  will-change: transform;
 }
 
 /* Preloader Styles */
@@ -218,7 +233,9 @@ body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  /* dvh tracks the real visible height as browser UI hides/shows.
+     Falls back to 100vh on browsers that don't support dvh. */
+  height: 100dvh;
   background-color: var(--color-background);
   display: flex;
   align-items: center;
@@ -262,5 +279,16 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* BottomNav safe area bottom offset — keeps nav above browser UI chrome */
+.bottom-nav-safe {
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 640px) {
+  .bottom-nav-safe {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 }
