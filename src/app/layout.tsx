@@ -4,6 +4,7 @@ import "./globals.css";
 import LenisProvider from "@/components/providers/LenisProvider";
 import GSAPProvider from "@/components/providers/GSAPProvider";
 import TransitionProvider from "@/components/providers/TransitionProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +56,7 @@ export default function RootLayout({
           <GSAPProvider>
             <TransitionProvider>
               {children}
+              <SpeedInsights />
             </TransitionProvider>
           </GSAPProvider>
         </LenisProvider>
