@@ -25,7 +25,7 @@ const projects = [
     authorName: "Pavel Rosenberg",
     category: "Backend",
     year: "2026",
-    image: "/card-showcase.jpg",
+    image: "/case-study/card-showcase.jpg",
     video: "https://res.cloudinary.com/dsh3yslek/video/upload/v1772051657/portfolio-showreel-nike_tqyica.mp4",
     tags: ["Next.js", "PostgreSQL", "Drizzle ORM", "Audit Logging", "Type-safe APIs", "TypeScript"],
     href: "/case-study/backend-integration",

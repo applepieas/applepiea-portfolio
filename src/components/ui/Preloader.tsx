@@ -14,9 +14,9 @@ const PRELOAD_IMAGES = [
   '/design-service.jpg',
   '/development-service.jpg',
   '/integration-service.jpg',
-  '/card-showcase.jpg',
-  '/desktop-showcase.jpg',
-  '/mobile-showcase.jpg',
+  '/case-study/card-showcase.jpg',
+  '/case-study/desktop-showcase.jpg',
+  '/case-study/mobile-showcase.jpg',
 ];
 
 const PRELOAD_VIDEO =

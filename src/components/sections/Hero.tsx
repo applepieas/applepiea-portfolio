@@ -214,7 +214,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
                     ref={desktopVideoRef}
                     src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
                     preload="auto"
-                    poster="/Mockup-product-details.jpg"
+                    poster="/case-study/mockup-product-details.jpg"
                     loop
                     muted
                     playsInline
@@ -239,7 +239,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
               ref={mobileVideoRef}
               src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
               preload="metadata"
-              poster="/Mockup-product-details.jpg"
+              poster="/case-study/mockup-product-details.jpg"
               loop
               muted
               playsInline
