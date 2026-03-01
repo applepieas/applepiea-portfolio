@@ -264,7 +264,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         </Copy>
       </div>
 
-      <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] left-5 right-8 lg:left-5 lg:right-8 max-lg:left-0 max-lg:right-0 max-lg:px-5 z-100 max-lg:text-center max-lg:items-center text-[20px] overflow-visible'>
+      <div className='flex flex-col uppercase absolute bottom-[15vh] lg:bottom-[20vh] lg:left-5 lg:right-8 left-0 right-0 z-100 max-lg:text-center max-lg:items-center text-[20px] overflow-visible'>
         <div className='flex justify-between font-semibold text-lg hidden lg:flex'>
           <Copy animateOnScroll={false} delay={textDelay} isReady={isLoaded}>
             <p className="ml-4">A</p>
@@ -282,7 +282,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
           <h1 className='font-bold hero-title text-[clamp(11.7vw,20vw,11.5vw)] max-lg:text-[20vw] w-full whitespace-nowrap max-lg:whitespace-normal max-lg:text-center tracking-tighter leading-[0.85] md:align-middle overflow-visible'>
             <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>DESIGN</span>
             <span className='inline max-lg:hidden'> </span>
-            <span className='inline max-lg:block max-lg:w-fit max-lg:mx-auto'>ENGINEER</span>
+            <span className='inline pr-[1.6vw] lg:pr-0 max-lg:block max-lg:w-fit max-lg:mx-auto'>ENGINEER</span>
           </h1>
         </Copy>
       </div>
