@@ -168,7 +168,7 @@ export default function BackendIntegrationCaseStudy() {
                 fill
                 className="object-cover object-left"
                 sizes="100vw"
-                src="/card-showcase.jpg"
+                src="/case-study/card-showcase.jpg"
               />
             </div>
 
@@ -179,7 +179,7 @@ export default function BackendIntegrationCaseStudy() {
                 fill
                 className="object-cover"
                 sizes="100vw"
-                src="/Mockup-products.jpg"
+                src="/case-study/mockup-products.jpg"
               />
             </div>
 
@@ -190,7 +190,7 @@ export default function BackendIntegrationCaseStudy() {
                 fill
                 className="object-cover"
                 sizes="100vw"
-                src="/Mockup-product-details.jpg"
+                src="/case-study/mockup-product-details.jpg"
               />
             </div>
 
@@ -202,7 +202,7 @@ export default function BackendIntegrationCaseStudy() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  src="/Mockup-products-mobile.jpg"
+                  src="/case-study/mockup-products-mobile.jpg"
                 />
               </div>
               <div className="w-full aspect-9/16 rounded-lg lg:rounded-xl overflow-hidden relative">
@@ -211,7 +211,7 @@ export default function BackendIntegrationCaseStudy() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  src="/Mockup-product-details-mobile.jpg"
+                  src="/case-study/mockup-product-details-mobile.jpg"
                 />
               </div>
             </div>

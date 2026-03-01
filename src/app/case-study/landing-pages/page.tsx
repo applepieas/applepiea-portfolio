@@ -157,7 +157,7 @@ export default function LandingPagesCaseStudy() {
                 quality={100}
                 priority
                 sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), calc(100vw - 64px)"
-                src="/mobile-showcase.jpg"
+                src="/case-study/mobile-showcase.jpg"
               />
             </div>
 
