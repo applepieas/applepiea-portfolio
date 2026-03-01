@@ -167,18 +167,6 @@ export default function About() {
           ))}
         </div>
 
-        {/*
-        <div className="marquee">
-          <div ref={marqueeTrackRef} className="marquee-track">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="marquee-item">
-                <img className="w-full h-full object-cover" src="/image.png" alt="fish" />
-              </div>
-            ))}
-          </div>
-        </div>
-        */}
-
       </section>
     </div>
   );

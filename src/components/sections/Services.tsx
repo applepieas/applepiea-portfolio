@@ -160,7 +160,9 @@ export default function Services() {
                         <Image
                           src={service.image}
                           alt={`${service.title} preview`}
+                          quality={100}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 30vw"
                           className={`object-cover scale-[1.2] ${service.imagePosition || ''}`}
                         />
                       </div>

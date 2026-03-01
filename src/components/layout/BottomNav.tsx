@@ -14,7 +14,7 @@ interface BottomNavProps {
 }
 
 const navLinks = [
-  { name: 'Home', href: '#', image: '/favicon-dark-680x680.jpg' },
+  { name: 'Home', href: '#', image: '/favicon.svg' },
   { name: 'Projects', href: '#projects', image: '/case-study/card-showcase.jpg' },
   { name: 'About', href: '#about', image: '/flag.png' },
 ];
@@ -444,8 +444,8 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
                     <Image
                       src={link.image}
                       alt="Profile"
-                      width={300}
-                      height={300}
+                      width={76}
+                      height={76}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -463,10 +463,10 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
           {/* Left: Profile Image */}
           <div className="w-16 h-16 sm:w-[76px] sm:h-[76px] rounded-xl overflow-hidden bg-background flex-shrink-0">
             <Image
-              src="/favicon-dark-680x680.jpg"
+              src="/favicon.svg"
               alt="Profile"
-              width={400}
-              height={400}
+              width={76}
+              height={76}
               className="w-full h-full object-cover"
             />
           </div>
