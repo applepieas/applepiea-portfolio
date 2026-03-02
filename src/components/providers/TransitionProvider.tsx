@@ -16,6 +16,21 @@ const TransitionContext = createContext<TransitionContextType>({
 
 export const usePageTransition = () => useContext(TransitionContext);
 
+// ── Style helpers ──────────────────────────────────────────────────────────
+type ContentStyle = 'opacity' | 'visibility' | 'transform' | 'position' | 'zIndex' | 'scale';
+function applyContentStyles(el: HTMLDivElement, patch: Partial<Record<ContentStyle, string>>) {
+  (Object.keys(patch) as ContentStyle[]).forEach((key) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (el.style as any)[key] = patch[key] ?? '';
+  });
+}
+function clearContentStyles(el: HTMLDivElement) {
+  const keys: ContentStyle[] = ['opacity', 'visibility', 'transform', 'position', 'zIndex', 'scale'];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  keys.forEach((key) => { (el.style as any)[key] = ''; });
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function TransitionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -43,23 +58,20 @@ export default function TransitionProvider({ children }: { children: React.React
 
     // Keep content hidden behind the overlay initially
     if (contentWrapperRef.current) {
-      contentWrapperRef.current.style.position = 'relative';
-      contentWrapperRef.current.style.zIndex = '1';
-      contentWrapperRef.current.style.transform = 'none';
-      // Make content visible but fully transparent while overlay is still solid
-      contentWrapperRef.current.style.visibility = 'visible';
-      contentWrapperRef.current.style.opacity = '0';
+      applyContentStyles(contentWrapperRef.current, {
+        position: 'relative',
+        zIndex: '1',
+        transform: 'none',
+        visibility: 'visible',
+        opacity: '0',
+      });
     }
 
     const tl = gsap.timeline({
       onComplete: () => {
         // Clean up all inline styles from content wrapper
         if (contentWrapperRef.current) {
-          contentWrapperRef.current.style.position = '';
-          contentWrapperRef.current.style.zIndex = '';
-          contentWrapperRef.current.style.opacity = '';
-          contentWrapperRef.current.style.visibility = '';
-          contentWrapperRef.current.style.transform = '';
+          clearContentStyles(contentWrapperRef.current);
         }
         resetOverlay();
         isAnimatingRef.current = false;
@@ -98,11 +110,7 @@ export default function TransitionProvider({ children }: { children: React.React
       resetOverlay();
       // Restore content wrapper visibility
       if (contentWrapperRef.current) {
-        contentWrapperRef.current.style.opacity = '';
-        contentWrapperRef.current.style.visibility = '';
-        contentWrapperRef.current.style.transform = '';
-        contentWrapperRef.current.style.position = '';
-        contentWrapperRef.current.style.zIndex = '';
+        clearContentStyles(contentWrapperRef.current);
       }
     }
 
@@ -170,12 +178,13 @@ export default function TransitionProvider({ children }: { children: React.React
       window.scrollTo(0, 0);
 
       // Keep content wrapper hidden — runEnterAnimation will reveal it.
-      // Only clear transform/scale so layout isn't affected, but keep it invisible.
       if (contentWrapperRef.current) {
-        contentWrapperRef.current.style.opacity = '0';
-        contentWrapperRef.current.style.visibility = 'hidden';
-        contentWrapperRef.current.style.transform = 'none';
-        contentWrapperRef.current.style.scale = '';
+        applyContentStyles(contentWrapperRef.current, {
+          opacity: '0',
+          visibility: 'hidden',
+          transform: 'none',
+          scale: '',
+        });
       }
 
       if (isSamePage) {

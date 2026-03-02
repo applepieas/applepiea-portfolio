@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -54,6 +54,8 @@ export default function Stack() {
   const cellRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   /* --- Character Flip Animation --- */
   useGSAP(() => {
@@ -130,58 +132,38 @@ export default function Stack() {
     };
   }, { scope: sectionRef });
 
-  /* Highlight position/size state */
-  const [highlightStyle, setHighlightStyle] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  /* Update highlight position via GSAP — desktop only */
+  const handleMouseEnter = (index: number) => {
+    setActiveIndex(index);
+    if (isMobile || !highlightRef.current || !gridRef.current || !cellRefs.current[index]) return;
 
-  /* Update highlight position when activeIndex changes */
-  useEffect(() => {
-    if (activeIndex === null || !gridRef.current) return;
-
-    const cell = cellRefs.current[activeIndex];
+    const cell = cellRefs.current[index]!;
     const grid = gridRef.current;
+    const gridRect = grid.getBoundingClientRect();
+    const cellRect = cell.getBoundingClientRect();
 
-    if (cell) {
-      const gridRect = grid.getBoundingClientRect();
-      const cellRect = cell.getBoundingClientRect();
+    gsap.to(highlightRef.current, {
+      x: cellRect.left - gridRect.left - 2,
+      y: cellRect.top - gridRect.top - 2,
+      width: cellRect.width + 4,
+      height: cellRect.height + 4,
+      opacity: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+      overwrite: true,
+    });
+  };
 
-      setHighlightStyle({
-        x: cellRect.left - gridRect.left - 2,
-        y: cellRect.top - gridRect.top - 2,
-        width: cellRect.width + 4,
-        height: cellRect.height + 4,
-      });
-    }
-  }, [activeIndex]);
-
-  /* Recalculate on resize */
-  useEffect(() => {
-    const handleResize = () => {
-      if (activeIndex !== null) {
-        const cell = cellRefs.current[activeIndex];
-        const grid = gridRef.current;
-
-        if (cell && grid) {
-          const gridRect = grid.getBoundingClientRect();
-          const cellRect = cell.getBoundingClientRect();
-
-          setHighlightStyle({
-            x: cellRect.left - gridRect.left - 2,
-            y: cellRect.top - gridRect.top - 2,
-            width: cellRect.width + 4,
-            height: cellRect.height + 4,
-          });
-        }
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [activeIndex]);
+  const handleMouseLeave = () => {
+    setActiveIndex(null);
+    if (isMobile || !highlightRef.current) return;
+    gsap.to(highlightRef.current, {
+      opacity: 0,
+      duration: 0.2,
+      ease: 'power2.out',
+      overwrite: true,
+    });
+  };
 
   return (
     <section ref={sectionRef} className="md:py-20 pt-16 pb-0 w-full mb-[40vh]">
@@ -199,24 +181,14 @@ export default function Stack() {
       <div className="px-0 md:px-5">
 
         {/* --- Logo Grid --- */}
-        <div ref={gridRef} className="relative grid grid-cols-2 md:grid-cols-4 overflow-hidden">
+        <div ref={gridRef} className="relative grid grid-cols-2 md:grid-cols-4 overflow-hidden" onMouseLeave={handleMouseLeave}>
 
-          {/* --- Single Persistent Highlight --- */}
-          {/* Always rendered, animates position/size to active cell */}
-          {activeIndex !== null && (
-            <motion.div
+        {/* --- Single Persistent Highlight — GSAP-driven, desktop only --- */}
+          {!isMobile && (
+            <div
+              ref={highlightRef}
               className="absolute bg-foreground z-10 pointer-events-none"
-              animate={{
-                x: highlightStyle.x,
-                y: highlightStyle.y,
-                width: highlightStyle.width,
-                height: highlightStyle.height,
-              }}
-              transition={{
-                type: "spring",
-                bounce: 0.1,
-                duration: 0.6,
-              }}
+              style={{ opacity: 0, position: 'absolute', top: 0, left: 0 }}
             />
           )}
 
@@ -232,7 +204,7 @@ export default function Stack() {
                 h-[280px] md:h-[280px] lg:h-[350px]
                 ${borderClasses[index]}
               `}
-              onMouseEnter={() => setActiveIndex(index)}
+              onMouseEnter={() => handleMouseEnter(index)}
             >
               {/* --- Logo Image --- */}
               <Image

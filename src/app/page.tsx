@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 import Header from "@/components/layout/Header";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
@@ -11,14 +11,13 @@ import Preloader from "@/components/ui/Preloader";
 import Projects from "@/components/sections/Projects";
 
 export default function Home() {
-  const hasSeenPreloader = useSyncExternalStore(
-    () => () => { },
-    () => (typeof window === 'undefined'
-      ? false
-      : sessionStorage.getItem('preloaderSeen') === 'true'),
-    () => false
-  );
+  const [hasSeenPreloader, setHasSeenPreloader] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Read sessionStorage only on the client after hydration
+    setHasSeenPreloader(sessionStorage.getItem('preloaderSeen') === 'true');
+  }, []);
   const isReady = isLoaded || hasSeenPreloader;
   const showPreloader = !isReady;
 

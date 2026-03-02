@@ -419,7 +419,7 @@ export default function ArchitectureDiagram({ className }: { className?: string 
     setIsDragging(true);
     setHasInteracted(true);
     start.current = { x: e.clientX - tRef.current.x, y: e.clientY - tRef.current.y };
-    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch { /* synthetic events have no active pointer */ }
+    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch (_err) { /* synthetic events have no active pointer */ }
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {

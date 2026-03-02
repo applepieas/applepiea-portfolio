@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface SlidingButtonProps {
   defaultText?: string;
@@ -22,15 +22,15 @@ export default function SlidingButton({
   onClick,
   isLoaded = true,
 }: SlidingButtonProps) {
-  const buttonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const buttonRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
+  const slideRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
-  const lineHeight = 28; // Match text-[1.25rem] = 20px with some breathing room
+  const lineHeight = 28;
+  const isMobile = useIsMobile();
 
-  // Initial slide-up animation
+  // Initial slide-up reveal
   useGSAP(() => {
     if (!buttonRef.current || !isLoaded) return;
-
     gsap.fromTo(
       buttonRef.current,
       { yPercent: 100, opacity: 0 },
@@ -38,93 +38,68 @@ export default function SlidingButton({
     );
   }, { dependencies: [isLoaded] });
 
-  const handleCopy = (e: React.MouseEvent) => {
+  const slideTo = (index: number) => {
+    if (!slideRef.current) return;
+    gsap.to(slideRef.current, {
+      y: -lineHeight * index,
+      duration: 0.25,
+      ease: 'power2.out',
+      overwrite: true,
+    });
+  };
+
+  const handleMouseEnter = () => { if (!isMobile && !isCopied) slideTo(1); };
+  const handleMouseLeave = () => { if (!isMobile && !isCopied) slideTo(0); };
+
+  const handleCopy = () => {
     if (href?.startsWith('mailto:')) {
-      // Don't prevent default, allow mailto to open
       const email = href.replace('mailto:', '').split('?')[0];
       navigator.clipboard.writeText(email);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
+      slideTo(2);
+      setTimeout(() => {
+        setIsCopied(false);
+        slideTo(0);
+      }, 2000);
     }
     onClick?.();
   };
 
   const buttonContent = (
-    <div
-      className="relative overflow-hidden"
-      style={{ height: lineHeight }}
-    >
-      <motion.div
-        className="flex flex-col"
-        animate={isCopied ? "copied" : isHovered ? "hover" : "default"}
-        variants={{
-          default: { y: 0 },
-          hover: { y: -lineHeight },
-          copied: { y: -lineHeight * 2 },
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      >
-        {/* Line 1: Default text */}
-        <span
-          className="block text-center whitespace-nowrap"
-          style={{ height: lineHeight, lineHeight: `${lineHeight}px` }}
-        >
-          {defaultText}
-        </span>
-        {/* Line 2: Hover text */}
-        <span
-          className="block text-center whitespace-nowrap"
-          style={{ height: lineHeight, lineHeight: `${lineHeight}px` }}
-        >
-          {hoverText}
-        </span>
-        {/* Line 3: Copied text */}
-        <span
-          className="block text-center whitespace-nowrap"
-          style={{ height: lineHeight, lineHeight: `${lineHeight}px` }}
-        >
-          Email copied! ✈️
-        </span>
-      </motion.div>
+    <div className="relative overflow-hidden" style={{ height: lineHeight }}>
+      <div ref={slideRef} className="flex flex-col" style={{ transform: 'translateY(0px)' }}>
+        {[defaultText, hoverText, 'Email copied! ✈️'].map((text) => (
+          <span
+            key={text}
+            className="block text-center whitespace-nowrap"
+            style={{ height: lineHeight, lineHeight: `${lineHeight}px` }}
+          >
+            {text}
+          </span>
+        ))}
+      </div>
     </div>
   );
 
-  const baseClasses = `
-    inline-flex items-center justify-center
-    lg:px-6 lg:py-3
-    px-4 py-2
-    bg-foreground text-background 
-    rounded-[20px] font-semibold text-[1rem] lg:text-[1.25rem]
-    cursor-pointer
-    ${className}
-  `.trim();
+  const baseClasses = `inline-flex items-center justify-center lg:px-6 lg:py-3 px-4 py-2 bg-foreground text-background rounded-[20px] font-semibold text-[1rem] lg:text-[1.25rem] cursor-pointer ${className}`.trim();
 
   const commonProps = {
     className: baseClasses,
-    onMouseEnter: () => setIsHovered(true),
-    onMouseLeave: () => setIsHovered(false),
-    style: { opacity: 0, visibility: isLoaded ? 'visible' : 'hidden' } as React.CSSProperties,
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+    style: { opacity: 0, visibility: (isLoaded ? 'visible' : 'hidden') } as React.CSSProperties,
   };
 
   if (href) {
     return (
-      <a
-        ref={buttonRef as React.RefObject<HTMLAnchorElement>}
-        {...commonProps}
-        href={href}
-        onClick={handleCopy}
-      >
+      <a ref={buttonRef as React.RefObject<HTMLAnchorElement>} {...commonProps} href={href} onClick={handleCopy}>
         {buttonContent}
       </a>
     );
   }
 
   return (
-    <button
-      ref={buttonRef as React.RefObject<HTMLButtonElement>}
-      {...commonProps}
-      onClick={onClick}
-    >
+    <button ref={buttonRef as React.RefObject<HTMLButtonElement>} {...commonProps} onClick={onClick}>
       {buttonContent}
     </button>
   );

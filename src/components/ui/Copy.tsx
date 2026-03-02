@@ -5,18 +5,31 @@ import { useGSAP } from '@gsap/react';
 import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
-import React from 'react';
 import { useGSAPResize } from '@/components/providers/GSAPProvider';
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export default function Copy({ children, animateOnScroll = true, delay = 0, className = '', isReady = true }) {
+interface CopyProps {
+  children: React.ReactNode;
+  animateOnScroll?: boolean;
+  delay?: number;
+  className?: string;
+  isReady?: boolean;
+}
+
+export default function Copy({
+  children,
+  animateOnScroll = true,
+  delay = 0,
+  className = '',
+  isReady = true,
+}: CopyProps) {
   const { resizeKey } = useGSAPResize();
-  const containerRef = useRef(null);
-  const elementRef = useRef([]);
-  const splitRef = useRef([]);
-  const lines = useRef([]);
-  const masksRef = useRef([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const elementRef = useRef<Element[]>([]);
+  const splitRef = useRef<ReturnType<typeof SplitText.create>[]>([]);
+  const lines = useRef<(Element | Element[])[]>([]);
+  const masksRef = useRef<{ mask: HTMLDivElement; element: Element }[]>([]);
   // Start hidden to prevent flash before GSAP takes control
   const [initialHidden, setInitialHidden] = useState(true);
 
@@ -38,7 +51,7 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
       elementRef.current = [];
       lines.current = [];
 
-      let elements = [];
+      let elements: Element[] = [];
       if (containerRef.current.hasAttribute('data-copy-wrapper')) {
         elements = Array.from(containerRef.current.children);
       } else {
@@ -55,9 +68,9 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
           mask.style.verticalAlign = 'middle';
           mask.style.lineHeight = '0';
 
-          const computedStyle = window.getComputedStyle(element);
+          const computedStyle = window.getComputedStyle(element as HTMLElement);
           mask.style.margin = computedStyle.margin;
-          element.style.margin = '0';
+          (element as HTMLElement).style.margin = '0';
 
           element.parentNode?.insertBefore(mask, element);
           mask.appendChild(element);
@@ -67,10 +80,10 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
           return;
         }
 
-        if (element.textContent?.trim().length > 0) {
+        if (element.textContent?.trim().length ?? 0 > 0) {
           elementRef.current.push(element);
 
-          const split = SplitText.create(element, {
+          const split = SplitText.create(element as HTMLElement, {
             type: 'lines',
             mask: 'lines',
             linesClass: 'line++'
@@ -78,22 +91,22 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
 
           splitRef.current.push(split);
 
-          const computedStyle = window.getComputedStyle(element);
+          const computedStyle = window.getComputedStyle(element as HTMLElement);
           const textIndent = computedStyle.textIndent;
 
           if (textIndent && textIndent !== '0px') {
             if (split.lines.length > 0) {
-              split.lines[0].style.paddingLeft = textIndent;
+              (split.lines[0] as HTMLElement).style.paddingLeft = textIndent;
             }
-            element.style.textIndent = '0';
+            (element as HTMLElement).style.textIndent = '0';
           }
 
           lines.current.push(split.lines);
 
           split.lines.forEach((line) => {
-            if (line.parentElement?.style) {
-              line.parentElement.style.overflowX = 'visible';
-              line.parentElement.style.overflowY = 'clip';
+            if ((line as HTMLElement).parentElement?.style) {
+              (line as HTMLElement).parentElement!.style.overflowX = 'visible';
+              (line as HTMLElement).parentElement!.style.overflowY = 'clip';
             }
           });
         }
@@ -143,7 +156,7 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
   }, { scope: containerRef, dependencies: [animateOnScroll, delay, isReady, resizeKey] });
 
   // Hide content when isReady is false (before preloader completes) OR before GSAP has set initial positions
-  const hiddenStyle = (!isReady || initialHidden) ? { visibility: 'hidden' } : {};
+  const hiddenStyle = (!isReady || initialHidden) ? { visibility: 'hidden' as const } : {};
 
   return (
     <div ref={containerRef} className={className} data-copy-wrapper="true" style={hiddenStyle}>
@@ -151,4 +164,3 @@ export default function Copy({ children, animateOnScroll = true, delay = 0, clas
     </div>
   )
 }
-

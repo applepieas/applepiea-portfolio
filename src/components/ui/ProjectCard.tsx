@@ -6,13 +6,12 @@ import TransitionLink from '@/components/ui/TransitionLink';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface ProjectCardProps {
   title: string;
-  authorName: string;
-  authorIcon?: string;
   category: string;
   year: string;
   image: string;
@@ -23,8 +22,6 @@ interface ProjectCardProps {
 
 export default function ProjectCard({
   title,
-  authorName,
-  authorIcon = '/image.png',
   category,
   year,
   image,
@@ -36,6 +33,7 @@ export default function ProjectCard({
   const imageRef = useRef<HTMLImageElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMobile = useIsMobile();
 
   // Create marquee text by joining tags
   const marqueeText = tags.join(', ') + ', ';
@@ -49,7 +47,6 @@ export default function ProjectCard({
 
     // Skip parallax on mobile/touch devices — imperceptible on small screens,
     // costly on every scroll tick
-    const isMobile = window.matchMedia('(max-width: 1023px)').matches;
     if (isMobile) return;
 
     gsap.fromTo(
@@ -67,13 +64,12 @@ export default function ProjectCard({
         }
       }
     );
-  });
+  }, { dependencies: [isMobile] });
 
   const handleMouseEnter = () => {
     contextSafe(() => {
       // Only animate video on desktop
-      const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
-      if (!isDesktop) return;
+      if (isMobile) return;
 
       if (videoTimeoutRef.current) {
         clearTimeout(videoTimeoutRef.current);
@@ -100,8 +96,7 @@ export default function ProjectCard({
 
   const handleMouseLeave = () => {
     contextSafe(() => {
-      const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
-      if (!isDesktop) return;
+      if (isMobile) return;
 
       if (imageRef.current) {
         gsap.killTweensOf(imageRef.current);
@@ -139,8 +134,8 @@ export default function ProjectCard({
       <div
         ref={imageContainerRef}
         className="relative rounded-lg lg:rounded-xl overflow-hidden w-full h-65 md:h-87.5 lg:h-[clamp(500px,32vw,800px)] bg-neutral-900"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={isMobile ? undefined : handleMouseEnter}
+        onMouseLeave={isMobile ? undefined : handleMouseLeave}
       >
         <Image
           ref={imageRef}

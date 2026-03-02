@@ -369,15 +369,14 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
                 className={`relative flex items-center justify-center py-12 group overflow-hidden ${index < navLinks.length - 1 ? 'border-r border-background/20' : ''
                   }`}
               >
-                {/* Hover wipe overlay - rises from bottom */}
                 <div
-                  className="absolute inset-0 bg-background origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-300 ease-out"
+                  className="absolute inset-0 bg-background origin-bottom scale-y-0 transition-transform duration-300 ease-out [@media(hover:hover)]:group-hover:scale-y-100"
                 ></div>
 
                 {/* Text with mask reveal - fixed height container */}
                 <div className="overflow-hidden h-[40px] flex items-center justify-center relative z-10">
                   <span
-                    className="footer-text block text-[30px] md:text-[32px] font-semibold text-center transition-colors duration-300 group-hover:text-foreground"
+                    className="footer-text block text-[30px] md:text-[32px] font-semibold text-center transition-colors duration-300 [@media(hover:hover)]:group-hover:text-foreground"
                     style={{ transform: 'translateY(110%)' }}
                   >
                     {link.name}

@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Copy from '../ui/Copy';
 import Image from 'next/image';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -39,7 +40,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const mobileVideoContainerRef = useRef<HTMLDivElement>(null);
   const desktopVideoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const [isVideoReadyToPlay, setIsVideoReadyToPlay] = useState(false);
 
   // Start video playback immediately once the preloader signals isLoaded
@@ -60,16 +61,6 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
     }
   }, [isVideoReadyToPlay, isMobile]);
 
-
-  // Check if mobile on mount and resize
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 770);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   // ScrollTrigger reel animation (desktop only)
   useGSAP(() => {

@@ -28,10 +28,6 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* span {
-  padding: 0;
-  margin: 0;
-} */
 
 
 
@@ -50,14 +46,6 @@ body {
 .intro {
   position: sticky;
   top: 25%;
-  height: 100vh;
-  width: 100%;
-  z-index: 900;
-}
-
-.intro-mobile {
-  position: relative;
-  top: 12%;
   height: 100vh;
   width: 100%;
   z-index: 900;
@@ -91,7 +79,6 @@ body {
   border-radius: 1.5rem;
   background-color: #000;
   overflow: hidden;
-  border-radius: 1.5rem;
   z-index: 50;
 }
 

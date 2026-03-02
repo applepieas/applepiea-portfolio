@@ -5,20 +5,16 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function LenisProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    // Disable Lenis smooth scroll on touch/mobile devices — the browser's
-    // native momentum scroll is better optimised and has lower input latency.
-    const isTouchDevice =
-      typeof navigator !== 'undefined' &&
-      (/Mobi|Android/i.test(navigator.userAgent) ||
-        navigator.maxTouchPoints > 1);
+  const isMobile = useIsMobile();
 
+  useEffect(() => {
     const lenis = new Lenis({
-      smoothWheel: !isTouchDevice,
+      smoothWheel: !isMobile,
       touchMultiplier: 1.5,
     });
 
@@ -40,7 +36,7 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
       cancelAnimationFrame(rafId); // cancel BEFORE destroy
       lenis.destroy();
     };
-  }, []);
+  }, [isMobile]); // re-run when mobile state is determined after hydration
 
   return <>{children}</>;
 }

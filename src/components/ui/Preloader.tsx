@@ -97,7 +97,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
 
     // Preload video — use 'metadata' on mobile to avoid heavy buffering,
     // 'auto' on desktop to start buffering the full file
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches;
     const vid = document.createElement('video');
     vid.preload = isMobile ? 'metadata' : 'auto';
     vid.muted = true;

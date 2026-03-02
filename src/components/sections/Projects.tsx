@@ -12,7 +12,6 @@ gsap.registerPlugin(ScrollTrigger);
 const projects = [
   {
     title: "Landing Pages",
-    authorName: "Pavel Rosenberg",
     category: "Design",
     year: "2025",
     image: "/desktop-showcase.jpg",
@@ -22,7 +21,6 @@ const projects = [
   },
   {
     title: "Backend Integration",
-    authorName: "Pavel Rosenberg",
     category: "Backend",
     year: "2026",
     image: "/case-study/card-showcase.jpg",
@@ -84,7 +82,6 @@ export default function Projects() {
           <div key={project.title} className="project-card">
             <ProjectCard
               title={project.title}
-              authorName={project.authorName}
               category={project.category}
               year={project.year}
               image={project.image}

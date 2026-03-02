@@ -61,22 +61,25 @@ export default function Services() {
         }
       });
 
-      // Parallax scroll effect on the image itself
-      gsap.fromTo(
-        img,
-        { yPercent: -10 },
-        {
-          yPercent: 10,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: imageContainer,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1,
-            invalidateOnRefresh: true,
+      // Parallax scroll effect - desktop only
+      const isMobileQuery = window.matchMedia('(max-width: 1023px)').matches;
+      if (!isMobileQuery) {
+        gsap.fromTo(
+          img,
+          { yPercent: -10 },
+          {
+            yPercent: 10,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: imageContainer,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1,
+              invalidateOnRefresh: true,
+            }
           }
-        }
-      );
+        );
+      }
     });
   }, { scope: sectionRef });
 
