@@ -212,7 +212,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
                 <div className="video-wrapper">
                   <video
                     ref={desktopVideoRef}
-                    src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+                    src="https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto/v1772040750/My_Movie_cjgr03.mp4"
                     preload="auto"
                     poster="/case-study/mockup-product-details.jpg"
                     loop
@@ -237,8 +237,8 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
           <div ref={mobileVideoContainerRef} className='w-full h-full'>
             <video
               ref={mobileVideoRef}
-              src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
-              preload="metadata"
+              src="https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto,w_720/v1772040750/My_Movie_cjgr03.mp4"
+              preload="none"
               poster="/case-study/mockup-product-details.jpg"
               loop
               muted

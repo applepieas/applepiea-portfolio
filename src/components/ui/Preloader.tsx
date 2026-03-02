@@ -10,6 +10,8 @@ interface PreloaderProps {
 
 // All critical assets to preload before the site is revealed.
 // Add/remove paths here to match your actual above-fold assets.
+// Note: the hero video is intentionally excluded — it has a poster image
+// and is loaded lazily after the preloader completes to avoid blocking LCP.
 const PRELOAD_IMAGES = [
   '/design-service.jpg',
   '/development-service.jpg',
@@ -19,11 +21,7 @@ const PRELOAD_IMAGES = [
   '/case-study/mobile-showcase.jpg',
 ];
 
-const PRELOAD_VIDEO =
-  'https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4';
-
-// Safety timeout: if assets haven't loaded after 5 s, proceed anyway
-const SAFETY_TIMEOUT_MS = 5000;
+const SAFETY_TIMEOUT_MS = 3000;
 
 const Preloader = ({ onComplete }: PreloaderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -73,8 +71,8 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
     // Safety net — never block the user for more than SAFETY_TIMEOUT_MS
     const safetyTimer = setTimeout(runExitAnimation, SAFETY_TIMEOUT_MS);
 
-    // Preload all assets and drive counter progress
-    const total = PRELOAD_IMAGES.length + 1; // +1 for video
+    // Preload images and drive counter progress
+    const total = PRELOAD_IMAGES.length;
     let loaded = 0;
 
     const onAssetLoaded = () => {
@@ -94,17 +92,6 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
       img.onerror = onAssetLoaded; // count errors as "done" so we don't block
       img.src = src;
     });
-
-    // Preload video — use 'metadata' on mobile to avoid heavy buffering,
-    // 'auto' on desktop to start buffering the full file
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    const vid = document.createElement('video');
-    vid.preload = isMobile ? 'metadata' : 'auto';
-    vid.muted = true;
-    vid.playsInline = true;
-    vid.oncanplaythrough = onAssetLoaded;
-    vid.onerror = onAssetLoaded;
-    vid.src = PRELOAD_VIDEO;
 
     return () => {
       clearTimeout(safetyTimer);
