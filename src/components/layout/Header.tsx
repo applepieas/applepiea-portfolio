@@ -30,7 +30,7 @@ export default function Header({ isLoaded = false }: HeaderProps) {
   return (
     <header>
 
-      <div className="overflow-hidden lg:text-[20px] md:text-[18px] text-[16px] fixed left-8 right-8 top-4 lg:top-5 grid grid-cols-12 gap-4 lg:gap-8 z-50 font-medium header-text">
+      <div className="overflow-hidden lg:text-[20px] md:text-[18px] text-[16px] fixed left-8 right-8 top-4 lg:top-5 grid grid-cols-12 gap-4 lg:gap-8 z-50 font-medium header-text items-center">
 
         {/* Col 1: Location */}
         <div className="col-span-6 lg:col-span-3 flex flex-col items-start gap-0.8">
@@ -62,14 +62,17 @@ export default function Header({ isLoaded = false }: HeaderProps) {
           </Copy>
         </div>
 
-      </div>
+        {/* Col 4: CTA */}
+        <div className="col-span-6 lg:col-span-3 flex justify-end">
+          <div className="group cursor-pointer overflow-hidden">
+            <SlidingButton
+              defaultText="Get in touch"
+              hoverText="Say Ahoj! 👋"
+              isLoaded={isLoaded}
+            />
+          </div>
+        </div>
 
-      <div className="fixed right-4 lg:right-8 top-5 lg:top-6 group cursor-pointer z-50 overflow-hidden">
-        <SlidingButton
-          defaultText="Get in touch"
-          hoverText="Say Ahoj! 👋"
-          isLoaded={isLoaded}
-        />
       </div>
 
     </header>
