@@ -168,7 +168,7 @@ export default function TransitionProvider({ children }: { children: React.React
       top: topMargin,
       left: sideMargin,
       right: sideMargin,
-      borderRadius: `${radius}px`,
+      borderRadius: `${radius}px ${radius}px 0 0`,
       duration: 0.35,
       ease: 'power2.inOut',
     });

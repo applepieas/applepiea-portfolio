@@ -14,6 +14,7 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -39,8 +40,7 @@ export const metadata: Metadata = {
 
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml", media: "(prefers-color-scheme: dark)" },
-      { url: "/favicon-light.svg", type: "image/svg+xml", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "48x48" },
     ],
     apple: [

@@ -18,22 +18,30 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
       touchMultiplier: 1.5,
     });
 
-    // Keep ScrollTrigger in sync with Lenis on every scroll tick.
-    lenis.on("scroll", () => ScrollTrigger.update());
-
-    // Store the rAF id so we can cancel it on cleanup — without this,
-    // the recursive rAF loop outlives the component and leaks.
-    let rafId: number;
-
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
+    // Use gsap.ticker to drive both Lenis and ScrollTrigger on the rAF loop.
+    // This is the recommended pattern from GSAP + Lenis docs:
+    //   https://gsap.com/community/forums/topic/38588
+    // Wiring ScrollTrigger.update() off the `scroll` event (the previous approach)
+    // caused the Firefox "scroll-linked positioning effect" warning because the
+    // browser flags any JS that mutates layout in a scroll listener.
+    // Running everything inside gsap.ticker means no scroll-event listeners at
+    // all — the browser compositor can pan natively while GSAP stays in sync.
+    const tickerCallback = (time: number) => {
+      lenis.raf(time * 1000); // gsap ticker gives seconds, Lenis expects ms
     };
 
-    rafId = requestAnimationFrame(raf);
+    gsap.ticker.add(tickerCallback);
+
+    // Prevent gsap.ticker from auto-applying its own lag smoothing on top of
+    // Lenis' own smoothing (they would double-compensate for tab-hidden delays).
+    gsap.ticker.lagSmoothing(0);
+
+    // Keep ScrollTrigger positions up-to-date on every Lenis tick.
+    lenis.on("scroll", ScrollTrigger.update);
 
     return () => {
-      cancelAnimationFrame(rafId); // cancel BEFORE destroy
+      lenis.off("scroll", ScrollTrigger.update);
+      gsap.ticker.remove(tickerCallback);
       lenis.destroy();
     };
   }, [isMobile]); // re-run when mobile state is determined after hydration

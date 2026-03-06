@@ -144,7 +144,7 @@ export default function ProjectCard({
           fill
           priority
           quality={100}
-          sizes="100vw"
+          sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover scale-[1.2]"
         />
 

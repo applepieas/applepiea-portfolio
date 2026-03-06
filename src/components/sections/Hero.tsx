@@ -165,15 +165,14 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
   // Set initial hidden state for video mask (before preloader completes)
   useGSAP(() => {
-    // Desktop mask
+    // Only one of these refs will be mounted at a time (conditional render)
     if (videoMaskRef.current) {
       gsap.set(videoMaskRef.current, { yPercent: -110 });
     }
-    // Mobile container — same starting position so it slides from the top
     if (mobileVideoContainerRef.current) {
       gsap.set(mobileVideoContainerRef.current, { yPercent: -110 });
     }
-  }, { dependencies: [isMobile] }); // Re-run when mobile state changes
+  }, { scope: containerRef, dependencies: [isMobile] }); // Re-run when mobile state changes
 
   // Video mask reveal animation (from top) - wait for preloader
   useGSAP(() => {
@@ -181,14 +180,14 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
     const revealProps = { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.8 };
 
-    // Reveal whichever container is currently mounted
+    // Only one of these refs will be mounted at a time (conditional render)
     if (videoMaskRef.current) {
       gsap.to(videoMaskRef.current, revealProps);
     }
     if (mobileVideoContainerRef.current) {
       gsap.to(mobileVideoContainerRef.current, revealProps);
     }
-  }, { dependencies: [isLoaded, isMobile] }); // Re-run when mobile state or load state changes
+  }, { scope: containerRef, dependencies: [isLoaded, isMobile] }); // Re-run when mobile state or load state changes
 
   const textDelay = 0.3;
 
@@ -282,6 +281,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         <Image src="/arrow.svg" alt="arrow"
           width={24}
           height={24}
+          priority
           className='inline-block mr-1 flex-shrink-0 animate-bounce-arrow py-2' />
         <p>SCROLL DOWN</p>
       </Copy>
@@ -291,6 +291,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         <Image src="/arrow.svg" alt="arrow"
           width={24}
           height={24}
+          priority
           className='inline-block ml-1 animate-bounce-arrow py-2' />
       </Copy>
 
