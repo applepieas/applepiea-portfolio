@@ -1,12 +1,15 @@
 'use client';
 
 import Image from "next/image";
-import VideoCarousel from "@/components/ui/VideoCarousel";
+
 import CaseStudyLayout from "@/components/layout/CaseStudyLayout";
 import { usePageTransition } from "@/components/providers/TransitionProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export default function LandingPagesCaseStudy() {
   const { isContentReady } = usePageTransition();
+  const isMobile = useIsMobile();
+  const qualityParam = isMobile ? '&max_resolution=720p' : '';
 
   return (
     <CaseStudyLayout
@@ -31,14 +34,27 @@ export default function LandingPagesCaseStudy() {
           />
         </div>
 
-        {/* Video carousel */}
-        <VideoCarousel
-          className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden"
-          videos={[
-            'https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto/v1771232449/oravia-vid_fvpxwt.mp4',
-            'https://res.cloudinary.com/dsh3yslek/video/upload/q_auto,f_auto/v1771232459/loom-vid_n2fjcn.mp4',
-          ]}
-        />
+        {/* Video carousel – MUX embeds */}
+        <div className="flex gap-4">
+          <div className="w-full rounded-lg lg:rounded-xl overflow-hidden">
+            <iframe
+              src={`https://player.mux.com/FR72TzFLeYwI18vzatAgEKieP6gud01uYbzOTnVf6jrk?autoplay=true&muted=1&loop=true${qualityParam}`}
+              style={{ width: '100%', border: 'none', aspectRatio: '461/270' }}
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allowFullScreen
+              className="pointer-events-none"
+            />
+          </div>
+          <div className="w-full rounded-lg lg:rounded-xl overflow-hidden">
+            <iframe
+              src={`https://player.mux.com/51WAD8vjFahGCcK8I7yByvC9qepu4g02B7YnL3xWFY004?autoplay=true&muted=1&loop=true${qualityParam}`}
+              style={{ width: '100%', border: 'none', aspectRatio: '461/270' }}
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allowFullScreen
+              className="pointer-events-none"
+            />
+          </div>
+        </div>
 
         {/* Full width image 2 */}
         <div className="w-full h-[57vw] rounded-lg lg:rounded-xl overflow-hidden relative">

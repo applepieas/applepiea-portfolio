@@ -77,7 +77,7 @@ body {
   width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: 1.5rem;
-  background-color: #000;
+  background-color: pink;
   overflow: hidden;
   z-index: 50;
 }
@@ -102,6 +102,18 @@ body {
   border-radius: 1.5rem;
   pointer-events: none;
   z-index: 50;
+}
+
+/* ─── Mux Hero Player ───────────────────────────────────────────────────
+   Hide the center play button. The hero video is paused programmatically
+   during the reveal animation; we don't want the play button to flash.
+   Also disable all controls chrome via the CSS custom property.          */
+mux-player {
+  --controls: none;
+}
+
+mux-player::part(center-play-button) {
+  display: none;
 }
 
 

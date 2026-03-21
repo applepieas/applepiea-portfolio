@@ -32,7 +32,6 @@ export default function ProjectCard({
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  const videoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMobile = useIsMobile();
 
   // Create marquee text by joining tags
@@ -71,10 +70,6 @@ export default function ProjectCard({
       // Only animate video on desktop
       if (isMobile) return;
 
-      if (videoTimeoutRef.current) {
-        clearTimeout(videoTimeoutRef.current);
-        videoTimeoutRef.current = null;
-      }
 
       if (imageRef.current) {
         gsap.killTweensOf(imageRef.current);
@@ -86,10 +81,6 @@ export default function ProjectCard({
           { clipPath: "inset(100% 0% 0% 0%)", opacity: 0, y: 20 },
           { clipPath: "inset(0% 0% 0% 0%)", opacity: 1, y: 0, duration: 0.7, ease: "power3.out", delay: 0.1, overwrite: true }
         );
-        const videoEl = videoContainerRef.current.querySelector('video');
-        if (videoEl) {
-          videoEl.play().catch(() => { });
-        }
       }
     })();
   };
@@ -112,16 +103,6 @@ export default function ProjectCard({
           ease: "power3.inOut",
           overwrite: true
         });
-        const videoEl = videoContainerRef.current.querySelector('video');
-        if (videoEl) {
-          if (videoTimeoutRef.current) {
-            clearTimeout(videoTimeoutRef.current);
-          }
-          videoTimeoutRef.current = setTimeout(() => {
-            videoEl.pause();
-            videoEl.currentTime = 0;
-          }, 400);
-        }
       }
     })();
   };
@@ -154,12 +135,12 @@ export default function ProjectCard({
               ref={videoContainerRef}
               className="w-[50%] aspect-video rounded-lg overflow-hidden opacity-0 shadow-2xl translate-y-5 bg-black"
             >
-              <video
-                src={video}
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover"
+              <iframe
+                src={`${video}?autoplay=true&muted=1&loop=true`}
+                style={{ width: '100%', height: '100%', border: 'none', aspectRatio: '16/9' }}
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                allowFullScreen
+                className="w-full h-full pointer-events-none"
               />
             </div>
           </div>
