@@ -19,6 +19,9 @@ const PRELOAD_IMAGES = [
   '/case-study/mobile-showcase.jpg',
 ];
 
+const PRELOAD_VIDEO =
+  'https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4';
+
 // Safety timeout: if assets haven't loaded after 5 s, proceed anyway
 const SAFETY_TIMEOUT_MS = 5000;
 
@@ -71,7 +74,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
     const safetyTimer = setTimeout(runExitAnimation, SAFETY_TIMEOUT_MS);
 
     // Preload all assets and drive counter progress
-    const total = PRELOAD_IMAGES.length;
+    const total = PRELOAD_IMAGES.length + 1; // +1 for video
     let loaded = 0;
 
     const onAssetLoaded = () => {
@@ -92,6 +95,16 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
       img.src = src;
     });
 
+    // Preload video — use 'metadata' on mobile to avoid heavy buffering,
+    // 'auto' on desktop to start buffering the full file
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+    const vid = document.createElement('video');
+    vid.preload = isMobile ? 'metadata' : 'auto';
+    vid.muted = true;
+    vid.playsInline = true;
+    vid.oncanplaythrough = onAssetLoaded;
+    vid.onerror = onAssetLoaded;
+    vid.src = PRELOAD_VIDEO;
 
     return () => {
       clearTimeout(safetyTimer);

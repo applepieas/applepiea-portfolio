@@ -3,6 +3,7 @@
 import { createContext, useContext, useRef, useState, useCallback, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import gsap from 'gsap';
+import { useLenisControls } from '@/components/providers/LenisProvider';
 
 interface TransitionContextType {
   navigateTo: (href: string) => void;
@@ -34,12 +35,14 @@ function clearContentStyles(el: HTMLDivElement) {
 export default function TransitionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const lenis = useLenisControls();
   const [isContentReady, setIsContentReady] = useState(true);
   const isAnimatingRef = useRef(false);
   const targetHrefRef = useRef<string | null>(null);
   const contentReadyFiredRef = useRef(false);
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const scrollUnlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resetOverlay = useCallback(() => {
     if (!overlayRef.current) return;
@@ -77,8 +80,13 @@ export default function TransitionProvider({ children }: { children: React.React
         isAnimatingRef.current = false;
         targetHrefRef.current = null;
         contentReadyFiredRef.current = false;
-        document.documentElement.style.overflow = '';
         setIsContentReady(true);
+        // Unlock scroll 1 s after the enter animation finishes so page
+        // animations have a head-start before the user can scroll away.
+        scrollUnlockTimerRef.current = setTimeout(() => {
+          document.documentElement.style.overflow = '';
+          lenis?.start();
+        }, 130);
       },
     });
 
@@ -101,12 +109,19 @@ export default function TransitionProvider({ children }: { children: React.React
     // Kill any existing animations
     gsap.killTweensOf([contentWrapperRef.current, overlayRef.current]);
 
+    // Cancel any pending scroll unlock from a previous transition.
+    if (scrollUnlockTimerRef.current) {
+      clearTimeout(scrollUnlockTimerRef.current);
+      scrollUnlockTimerRef.current = null;
+    }
+
     if (isAnimatingRef.current) {
       // Force reset if animation is stuck
       isAnimatingRef.current = false;
       targetHrefRef.current = null;
       contentReadyFiredRef.current = false;
       document.documentElement.style.overflow = '';
+      lenis?.start();
       resetOverlay();
       // Restore content wrapper visibility
       if (contentWrapperRef.current) {
@@ -122,6 +137,7 @@ export default function TransitionProvider({ children }: { children: React.React
     const isSamePage = pathname === href;
 
     document.documentElement.style.overflow = 'hidden';
+    lenis?.stop();
 
     // Responsive values to match the dark card on /case-study
     const isLg = window.innerWidth >= 1024;
@@ -197,6 +213,11 @@ export default function TransitionProvider({ children }: { children: React.React
     });
 
   }, [pathname, router, runEnterAnimation, resetOverlay]);
+
+  // Clean up pending scroll unlock timer on unmount.
+  useEffect(() => () => {
+    if (scrollUnlockTimerRef.current) clearTimeout(scrollUnlockTimerRef.current);
+  }, []);
 
   // Enter phase - triggered when pathname changes to target
   useEffect(() => {

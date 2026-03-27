@@ -1,22 +1,6 @@
-/**
- * Hero — sticky scroll-reel hero section.
- *
- * VIDEO PLAYBACK FLOW
- * ────────────────────
- * 1. HeroVideo renders paused on frame 0 (thumbnailTime={0} poster).
- * 2. When the preloader signals isLoaded, GSAP runs the slide-down reveal
- *    (yPercent -110 → 0, 1.2 s, delay 0.8 s).
- * 3. The `onComplete` callback on that tween calls playerRef.current?.play().
- *    Because the video is muted, browsers honour the autoplay and it starts
- *    seamlessly at the exact moment the reveal finishes.
- *
- * To change the poster frame, edit `thumbnailTime` inside <HeroVideo>.
- * Default is 0 (very first frame). Pass e.g. thumbnailTime={3} for 3 s in.
- */
-
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -24,11 +8,8 @@ import { SplitText } from 'gsap/SplitText';
 import Copy from '../ui/Copy';
 import Image from 'next/image';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import HeroVideo, { type MuxPlayerRefElement } from '../ui/HeroVideo';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
-
-const MUX_PLAYBACK_ID = 'Wh01FhKBX00O4DDsUo00vLWw8YwAxbaj7R5Qc00hu01S02tUQ';
 
 const breakpoints = [
   { maxWidth: 900, translateY: -15, movMultiplier: 450, scale: 0.65 },
@@ -57,9 +38,29 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const videoRef = useRef<HTMLDivElement>(null);
   const videoMaskRef = useRef<HTMLDivElement>(null);
   const mobileVideoContainerRef = useRef<HTMLDivElement>(null);
-  // Single ref shared between desktop and mobile renders (only one mounts at a time)
-  const playerRef = useRef<MuxPlayerRefElement | null>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
   const isMobile = useIsMobile();
+  const [isVideoReadyToPlay, setIsVideoReadyToPlay] = useState(false);
+
+  // Start video playback immediately once the preloader signals isLoaded
+  useEffect(() => {
+    if (isLoaded) {
+      setIsVideoReadyToPlay(true);
+    }
+  }, [isLoaded]);
+
+  // Handle video play on state changes or resize
+  useEffect(() => {
+    if (isVideoReadyToPlay) {
+      if (!isMobile && desktopVideoRef.current) {
+        desktopVideoRef.current.play().catch((e) => console.error("Video play failed:", e));
+      } else if (isMobile && mobileVideoRef.current) {
+        mobileVideoRef.current.play().catch((e) => console.error("Video play failed:", e));
+      }
+    }
+  }, [isVideoReadyToPlay, isMobile]);
+
 
   // ScrollTrigger reel animation (desktop only)
   useGSAP(() => {
@@ -102,6 +103,8 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
       const { translateY, scale } = getInitialValues(window.innerWidth);
       // Start slightly above center:  -50 is center, so -60 would be 10% above center
       const startYPercent = -50 + translateY;
+
+
 
       gsap.killTweensOf(videoRef.current);
 
@@ -162,41 +165,30 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
 
   // Set initial hidden state for video mask (before preloader completes)
   useGSAP(() => {
-    // Only one of these refs will be mounted at a time (conditional render)
+    // Desktop mask
     if (videoMaskRef.current) {
       gsap.set(videoMaskRef.current, { yPercent: -110 });
     }
+    // Mobile container — same starting position so it slides from the top
     if (mobileVideoContainerRef.current) {
       gsap.set(mobileVideoContainerRef.current, { yPercent: -110 });
     }
-  }, { scope: containerRef, dependencies: [isMobile] }); // Re-run when mobile state changes
+  }, { dependencies: [isMobile] }); // Re-run when mobile state changes
 
   // Video mask reveal animation (from top) - wait for preloader
-  // onComplete → start the Mux player so video begins exactly when the
-  // slide-down finishes and the first frame is already visible.
   useGSAP(() => {
     if (!isLoaded) return;
 
-    const revealProps = {
-      yPercent: 0,
-      duration: 1.2,
-      ease: 'power3.out',
-      delay: 0.8,
-      onComplete: () => {
-        playerRef.current?.play().catch((e: unknown) => {
-          console.error('HeroVideo play failed:', e);
-        });
-      },
-    };
+    const revealProps = { yPercent: 0, duration: 1.2, ease: 'power3.out', delay: 0.8 };
 
-    // Only one of these refs will be mounted at a time (conditional render)
+    // Reveal whichever container is currently mounted
     if (videoMaskRef.current) {
       gsap.to(videoMaskRef.current, revealProps);
     }
     if (mobileVideoContainerRef.current) {
       gsap.to(mobileVideoContainerRef.current, revealProps);
     }
-  }, { scope: containerRef, dependencies: [isLoaded, isMobile] }); // Re-run when mobile state or load state changes
+  }, { dependencies: [isLoaded, isMobile] }); // Re-run when mobile state or load state changes
 
   const textDelay = 0.3;
 
@@ -209,9 +201,17 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
             <div ref={videoMaskRef} className="video-container-desktop">
               <div className="video-preview">
                 <div className="video-wrapper">
-                  <HeroVideo
-                    ref={playerRef}
-                    playbackId={MUX_PLAYBACK_ID}
+                  <video
+                    ref={desktopVideoRef}
+                    src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+                    preload="auto"
+                    poster="/case-study/mockup-product-details.jpg"
+                    loop
+                    muted
+                    playsInline
+                    className='iframe-desktop pointer-events-none'
+                    title='fish video'
+                    onPause={(e) => { e.currentTarget.play().catch(() => { }); }}
                   />
                 </div>
               </div>
@@ -226,12 +226,18 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         <div className='w-[90vw] aspect-video mx-auto mt-32 rounded-2xl overflow-hidden isolate'>
           {/* Inner container — this is what GSAP animates from yPercent -110 → 0 */}
           <div ref={mobileVideoContainerRef} className='w-full h-full'>
-            <div className='relative w-full h-full'>
-              <HeroVideo
-                ref={playerRef}
-                playbackId={MUX_PLAYBACK_ID}
-              />
-            </div>
+            <video
+              ref={mobileVideoRef}
+              src="https://res.cloudinary.com/dsh3yslek/video/upload/v1772040750/My_Movie_cjgr03.mp4"
+              preload="metadata"
+              poster="/case-study/mockup-product-details.jpg"
+              loop
+              muted
+              playsInline
+              className='w-full h-full pointer-events-none rounded-2xl object-cover'
+              title='fish video'
+              onPause={(e) => { e.currentTarget.play().catch(() => { }); }}
+            />
           </div>
         </div>
       )}
@@ -276,7 +282,6 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         <Image src="/arrow.svg" alt="arrow"
           width={24}
           height={24}
-          priority
           className='inline-block mr-1 flex-shrink-0 animate-bounce-arrow py-2' />
         <p>SCROLL DOWN</p>
       </Copy>
@@ -286,7 +291,6 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         <Image src="/arrow.svg" alt="arrow"
           width={24}
           height={24}
-          priority
           className='inline-block ml-1 animate-bounce-arrow py-2' />
       </Copy>
 

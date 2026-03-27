@@ -96,6 +96,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Runs synchronously before React/Lenis — locks scroll for first-time visitors
+            with zero gap between HTML parse and React hydration. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{if(sessionStorage.getItem('preloaderSeen')!=='true'){document.documentElement.style.overflow='hidden'}}catch(e){}` }} />
         <LenisProvider>
           <GSAPProvider>
             <TransitionProvider>
