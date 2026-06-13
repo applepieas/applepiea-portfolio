@@ -17,7 +17,7 @@ interface SlidingButtonProps {
 export default function SlidingButton({
   defaultText = 'Get in touch',
   hoverText = 'Say Ahoj! 👋',
-  href = "mailto:vapel.rosenberg@gmail.com?subject=Let's work together",
+  href = "mailto:pavelros.webdev@gmail.com?subject=Let's work together",
   className = '',
   onClick,
   isLoaded = true,
