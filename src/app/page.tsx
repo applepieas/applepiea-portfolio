@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Header from "@/components/layout/Header";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
@@ -11,16 +11,17 @@ import Preloader from "@/components/ui/Preloader";
 import Projects from "@/components/sections/Projects";
 import { useLenisControls } from "@/components/providers/LenisProvider";
 
+const noopSubscribe = () => () => { };
+const readPreloaderSeen = () => {
+  try { return sessionStorage.getItem('preloaderSeen') === 'true'; } catch { return false; }
+};
+
 export default function Home() {
-  const [hasSeenPreloader, setHasSeenPreloader] = useState(false);
+  // false on the server; on the client, true if the preloader already ran this session
+  const hasSeenPreloader = useSyncExternalStore(noopSubscribe, readPreloaderSeen, () => false);
   const [isLoaded, setIsLoaded] = useState(false);
   const lenis = useLenisControls();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const seen = sessionStorage.getItem('preloaderSeen') === 'true';
-    setHasSeenPreloader(seen);
-  }, []);
 
   const isReady = isLoaded || hasSeenPreloader;
   const showPreloader = !isReady;

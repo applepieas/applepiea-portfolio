@@ -419,7 +419,7 @@ export default function ArchitectureDiagram({ className }: { className?: string 
     setIsDragging(true);
     setHasInteracted(true);
     start.current = { x: e.clientX - tRef.current.x, y: e.clientY - tRef.current.y };
-    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch (_err) { /* synthetic events have no active pointer */ }
+    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch { /* synthetic events have no active pointer */ }
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
@@ -441,13 +441,6 @@ export default function ArchitectureDiagram({ className }: { className?: string 
       }));
       return next;
     });
-  }, []);
-
-  const reset = useCallback(() => {
-    setScale(0.7);
-    if (!containerRef.current) return;
-    const { width, height } = containerRef.current.getBoundingClientRect();
-    setTranslate({ x: width / 2 - 880 * 0.7, y: height / 2 - 500 * 0.7 });
   }, []);
 
   const connections = getConnections();

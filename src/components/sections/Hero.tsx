@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -41,14 +41,8 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
   const desktopVideoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
   const isMobile = useIsMobile();
-  const [isVideoReadyToPlay, setIsVideoReadyToPlay] = useState(false);
-
   // Start video playback immediately once the preloader signals isLoaded
-  useEffect(() => {
-    if (isLoaded) {
-      setIsVideoReadyToPlay(true);
-    }
-  }, [isLoaded]);
+  const isVideoReadyToPlay = isLoaded;
 
   // Handle video play on state changes or resize
   useEffect(() => {
@@ -73,7 +67,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
     let scrollProgress = 0;
     let currentXOffset = 0; // Track the current mouse-induced X offset
 
-    const createScrollAnimation = (startYPercent: number) => {
+    const createScrollAnimation = () => {
       if (scrollTween) scrollTween.kill();
 
       scrollTween = gsap.to(videoRef.current, {
@@ -118,7 +112,7 @@ const Hero = ({ isLoaded = false }: HeroProps) => {
         overwrite: 'auto'
       });
 
-      createScrollAnimation(startYPercent);
+      createScrollAnimation();
     };
 
     gsap.delayedCall(0.01, updateInitialState);

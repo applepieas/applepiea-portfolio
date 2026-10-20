@@ -1,31 +1,23 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
+
+const QUERY = '(max-width: 1023px)';
+
+const subscribe = (onChange: () => void) => {
+  const mq = window.matchMedia(QUERY);
+  mq.addEventListener('change', onChange);
+  return () => mq.removeEventListener('change', onChange);
+};
+
+const getSnapshot = () => window.matchMedia(QUERY).matches;
+const getServerSnapshot = () => false;
 
 /**
  * Returns true when viewport width < 1024px (lg breakpoint).
  * SSR-safe: returns false on server, updates after hydration.
- * Uses a debounced resize listener to avoid thrashing.
+ * matchMedia only fires when the query flips, so there is no resize thrashing.
  * Single source of truth — replaces all ad-hoc mobile checks across the codebase.
  */
 export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 1023px)');
-    setIsMobile(mq.matches);
-
-    let rafId: number;
-    const handler = (e: MediaQueryListEvent) => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => setIsMobile(e.matches));
-    };
-
-    mq.addEventListener('change', handler);
-    return () => {
-      cancelAnimationFrame(rafId);
-      mq.removeEventListener('change', handler);
-    };
-  }, []);
-
-  return isMobile;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

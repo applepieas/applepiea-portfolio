@@ -14,9 +14,8 @@ const PRELOAD_IMAGES = [
   '/design-service.jpg',
   '/development-service.jpg',
   '/integration-service.jpg',
+  '/case-study/voice-agent/voice-cover.jpg',
   '/case-study/card-showcase.jpg',
-  '/case-study/desktop-showcase.jpg',
-  '/case-study/mobile-showcase.jpg',
 ];
 
 const PRELOAD_VIDEO =
@@ -34,6 +33,9 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
   useEffect(() => {
     if (!containerRef.current || !counterRef.current) return;
 
+    // Capture refs for the cleanup function
+    const container = containerRef.current;
+    const counterTween = displayValue.current;
     let completed = false;
 
     // Animate the displayed counter to a new target percentage
@@ -108,8 +110,8 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
 
     return () => {
       clearTimeout(safetyTimer);
-      gsap.killTweensOf(displayValue.current);
-      if (containerRef.current) gsap.killTweensOf(containerRef.current);
+      gsap.killTweensOf(counterTween);
+      gsap.killTweensOf(container);
     };
   }, [onComplete]);
 

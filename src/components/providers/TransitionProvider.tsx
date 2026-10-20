@@ -103,7 +103,7 @@ export default function TransitionProvider({ children }: { children: React.React
       duration: 0.9,
       ease: 'power2.out',
     });
-  }, [resetOverlay]);
+  }, [resetOverlay, lenis]);
 
   const navigateTo = useCallback((href: string) => {
     // Kill any existing animations
@@ -212,7 +212,7 @@ export default function TransitionProvider({ children }: { children: React.React
       }
     });
 
-  }, [pathname, router, runEnterAnimation, resetOverlay]);
+  }, [pathname, router, runEnterAnimation, resetOverlay, lenis]);
 
   // Clean up pending scroll unlock timer on unmount.
   useEffect(() => () => {

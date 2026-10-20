@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState, useEffect } from 'react';
+import { useViewportValue } from '@/hooks/useBreakpoint';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -25,6 +26,12 @@ const socialLinks = [
   { name: 'GitHub', href: 'https://github.com/applepieas', icon: '/logos/github.svg' },
 ];
 
+const getNavBreakpoint = (): 'mobile' | 'tablet' | 'desktop' => {
+  if (window.innerWidth >= 1024) return 'desktop';
+  if (window.innerWidth >= 768) return 'tablet';
+  return 'mobile';
+};
+
 export default function BottomNav({ isLoaded = false }: BottomNavProps) {
   const navRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,49 +43,10 @@ export default function BottomNav({ isLoaded = false }: BottomNavProps) {
   const isOpenRef = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isFooterMode, setIsFooterMode] = useState(false);
-  // Track current breakpoint to re-run animation when crossing any breakpoint
-  const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
-
-  // Detect breakpoint changes using matchMedia — more reliable than resize events
-  // on mobile where the browser chrome resizing (address bar hide/show) fires
-  // spurious resize events that would kill all ScrollTriggers mid-scroll.
-  useEffect(() => {
-    const getBreakpoint = (): 'mobile' | 'tablet' | 'desktop' => {
-      if (window.innerWidth >= 1024) return 'desktop';
-      if (window.innerWidth >= 768) return 'tablet';
-      return 'mobile';
-    };
-
-    // Set initial value immediately
-    setBreakpoint(getBreakpoint());
-
-    // Use a debounced resize listener so that the mobile browser chrome
-    // auto-hide/show (which fires resize) doesn't trigger a full re-render
-    // and ScrollTrigger rebuild on every scroll bounce.
-    let debounceTimer: ReturnType<typeof setTimeout>;
-    let lastBreakpoint = getBreakpoint();
-
-    const handleResize = () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        const newBreakpoint = getBreakpoint();
-        // Only update state if the breakpoint category actually changed —
-        // this prevents re-renders from sub-breakpoint size fluctuations
-        // (e.g. mobile browser chrome showing/hiding ≈ 60–80px height change)
-        if (newBreakpoint !== lastBreakpoint) {
-          lastBreakpoint = newBreakpoint;
-          setBreakpoint(newBreakpoint);
-        }
-      }, 300); // 300ms debounce — long enough to ignore chrome auto-hide flicker
-    };
-
-    window.addEventListener('resize', handleResize, { passive: true });
-
-    return () => {
-      clearTimeout(debounceTimer);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  // Track current breakpoint to re-run animation when crossing any breakpoint.
+  // Debounced at 300ms and only re-renders when the category changes, so mobile
+  // browser chrome auto-hide/show never kills ScrollTriggers mid-scroll.
+  const breakpoint = useViewportValue(getNavBreakpoint, 'desktop', 300);
 
   // Initial slide-up animation - re-runs on any breakpoint change to prevent stale states
   useGSAP(() => {

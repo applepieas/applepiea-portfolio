@@ -18,6 +18,9 @@ interface ProjectCardProps {
   video?: string;
   tags: string[];
   href: string;
+  /** Image scale while hovered. Keep ≥ ~1.1 for flat/graphic covers so the
+   *  card background never shows around the shrunken image. */
+  hoverScale?: number;
 }
 
 export default function ProjectCard({
@@ -28,6 +31,7 @@ export default function ProjectCard({
   video,
   tags,
   href,
+  hoverScale = 0.99,
 }: ProjectCardProps) {
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -78,7 +82,7 @@ export default function ProjectCard({
 
       if (imageRef.current) {
         gsap.killTweensOf(imageRef.current);
-        gsap.to(imageRef.current, { scale: 0.99, filter: "blur(10px)", duration: 0.6, ease: "power3.out", overwrite: true });
+        gsap.to(imageRef.current, { scale: hoverScale, filter: "blur(10px)", duration: 0.6, ease: "power3.out", overwrite: true });
       }
       if (videoContainerRef.current) {
         gsap.killTweensOf(videoContainerRef.current);

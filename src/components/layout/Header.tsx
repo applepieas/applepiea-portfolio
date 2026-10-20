@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 import Copy from '../ui/Copy';
 import SlidingButton from '../ui/SlidingButton';
 
@@ -12,18 +12,18 @@ const formatTime = () =>
     hour12: true,
   });
 
+const subscribeClock = (onChange: () => void) => {
+  const id = setInterval(onChange, 30_000);
+  return () => clearInterval(id);
+};
+
 interface HeaderProps {
   isLoaded?: boolean;
 }
 
 export default function Header({ isLoaded = false }: HeaderProps) {
-  const [time, setTime] = useState<string | null>(null);
-
-  useEffect(() => {
-    setTime(formatTime());
-    const id = setInterval(() => setTime(formatTime()), 30_000);
-    return () => clearInterval(id);
-  }, []);
+  // null on the server (time zone/clock differ), live Prague time on the client
+  const time = useSyncExternalStore(subscribeClock, formatTime, () => null);
 
   const textDelay = 0.8;
 

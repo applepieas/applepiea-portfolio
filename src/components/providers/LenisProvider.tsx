@@ -41,11 +41,13 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     // Stop immediately if the preloader hasn't been dismissed yet.
     // This is checked in the same tick as creation so there is no window
     // where Lenis accepts scroll input before being stopped.
+    // The preloader only exists on the home page — a direct visit to a
+    // case study must never be locked, since nothing would unlock it.
     try {
-      if (sessionStorage.getItem('preloaderSeen') !== 'true') {
+      if (window.location.pathname === '/' && sessionStorage.getItem('preloaderSeen') !== 'true') {
         lenis.stop();
       }
-    } catch (_) {}
+    } catch {}
 
     // Keep ScrollTrigger in sync with Lenis on every scroll tick.
     lenis.on("scroll", () => ScrollTrigger.update());

@@ -112,6 +112,12 @@ export default function Copy({
         }
       });
 
+      // Nothing to animate (e.g. a blank placeholder like the header clock before it loads)
+      if (lines.current.length === 0) {
+        setInitialHidden(false);
+        return;
+      }
+
       gsap.set(lines.current, { y: '100%' });
 
       setInitialHidden(false);

@@ -11,13 +11,14 @@ gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
-    title: "Landing Pages",
-    category: "Design",
-    year: "2025",
-    image: "/desktop-showcase.jpg",
-    video: "https://res.cloudinary.com/dsh3yslek/video/upload/v1772051704/portfolio-showreel-landingpages_lmbquz.mp4",
-    tags: ["UI", "UX", "Web Design", "Motion Design", "Figma", "HTML", "CSS"],
-    href: "/case-study/landing-pages",
+    title: "Voice AI Agent",
+    category: "AI",
+    year: "2026",
+    image: "/case-study/voice-agent/voice-cover.jpg",
+    tags: ["Voice AI", "ElevenLabs", "SvelteKit", "WebSockets", "Latency Profiling", "Traefik", "Docker", "n8n"],
+    href: "/case-study/voice-agent",
+    // Flat colour panels — a 0.99 zoom-out would reveal the dark card background
+    hoverScale: 1.12,
   },
   {
     title: "Backend Integration",
@@ -88,6 +89,7 @@ export default function Projects() {
               video={project.video}
               tags={project.tags}
               href={project.href}
+              hoverScale={'hoverScale' in project ? project.hoverScale : undefined}
             />
           </div>
         ))}

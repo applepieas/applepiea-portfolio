@@ -8,7 +8,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  // latin-ext covers Czech diacritics (č, ř, ů…) used in the voice case study
+  subsets: ["latin", "latin-ext"],
 });
 
 const geistMono = Geist_Mono({
@@ -92,13 +93,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: the inline script below sets `overflow` on <html>
+    // before hydration (preloader scroll lock). Only affects this element's attributes.
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Runs synchronously before React/Lenis — locks scroll for first-time visitors
-            with zero gap between HTML parse and React hydration. */}
-        <script dangerouslySetInnerHTML={{ __html: `try{if(sessionStorage.getItem('preloaderSeen')!=='true'){document.documentElement.style.overflow='hidden'}}catch(e){}` }} />
+            with zero gap between HTML parse and React hydration. Home page only:
+            that's where the preloader runs and unlocks it again. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{if(location.pathname==='/'&&sessionStorage.getItem('preloaderSeen')!=='true'){document.documentElement.style.overflow='hidden'}}catch(e){}` }} />
         <LenisProvider>
           <GSAPProvider>
             <TransitionProvider>

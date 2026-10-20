@@ -279,3 +279,33 @@ body {
     bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 }
+/* Voice case study — animated dashed flow connectors */
+.flow-line-x,
+.flow-line-y {
+  background-repeat: repeat;
+  opacity: 0.45;
+}
+
+.flow-line-x {
+  background-image: linear-gradient(90deg, var(--color-foreground) 50%, transparent 0);
+  background-size: 8px 100%;
+  animation: flow-x 1.2s linear infinite;
+}
+
+.flow-line-y {
+  background-image: linear-gradient(180deg, var(--color-foreground) 50%, transparent 0);
+  background-size: 100% 8px;
+  animation: flow-y 1.2s linear infinite;
+}
+
+@keyframes flow-x {
+  to {
+    background-position: 16px 0;
+  }
+}
+
+@keyframes flow-y {
+  to {
+    background-position: 0 16px;
+  }
+}
